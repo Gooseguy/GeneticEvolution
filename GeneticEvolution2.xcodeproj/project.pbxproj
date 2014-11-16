@@ -7,24 +7,52 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		AA2BEF561A196224006186EB /* ResourcePath.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA2BEF551A196224006186EB /* ResourcePath.mm */; };
-		AA2BEF591A196224006186EB /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA2BEF581A196224006186EB /* main.cpp */; };
-		AA2BEF5C1A196224006186EB /* cute_image.jpg in Resources */ = {isa = PBXBuildFile; fileRef = AA2BEF5B1A196224006186EB /* cute_image.jpg */; };
-		AA2BEF5E1A196224006186EB /* nice_music.ogg in Resources */ = {isa = PBXBuildFile; fileRef = AA2BEF5D1A196224006186EB /* nice_music.ogg */; };
-		AA2BEF601A196224006186EB /* sansation.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AA2BEF5F1A196224006186EB /* sansation.ttf */; };
-		AA2BEF621A196224006186EB /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = AA2BEF611A196224006186EB /* icon.png */; };
+		AA2BEF691A19633D006186EB /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA2BEF681A19633D006186EB /* OpenGL.framework */; };
+		AA2BEF6B1A196369006186EB /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA2BEF6A1A196369006186EB /* SDL2.framework */; };
+		AA2BEF871A1963BC006186EB /* fragmentShader.glsl in Resources */ = {isa = PBXBuildFile; fileRef = AA2BEF791A1963BC006186EB /* fragmentShader.glsl */; };
+		AA2BEF881A1963BC006186EB /* vertexShader.glsl in Resources */ = {isa = PBXBuildFile; fileRef = AA2BEF7A1A1963BC006186EB /* vertexShader.glsl */; };
+		AA2BEF9E1A19657C006186EB /* EvolutionSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA2BEF8E1A19657C006186EB /* EvolutionSystem.cpp */; };
+		AA2BEF9F1A19657C006186EB /* MainGame.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA2BEF8F1A19657C006186EB /* MainGame.cpp */; };
+		AA2BEFA01A19657C006186EB /* SoftBodyAgent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA2BEF901A19657C006186EB /* SoftBodyAgent.cpp */; };
+		AA2BEFA11A19657C006186EB /* Spring.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA2BEF921A19657C006186EB /* Spring.cpp */; };
+		AA2BEFA21A19657C006186EB /* Camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA2BEF931A19657C006186EB /* Camera.cpp */; };
+		AA2BEFA31A19657C006186EB /* SoftBodyNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA2BEF981A19657C006186EB /* SoftBodyNode.cpp */; };
+		AA2BEFA41A19657C006186EB /* GLManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA2BEF9A1A19657C006186EB /* GLManager.cpp */; };
+		AA2BEFA51A19657C006186EB /* PhysicsObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA2BEF9B1A19657C006186EB /* PhysicsObject.cpp */; };
+		AA2BEFA61A19657C006186EB /* GeneticEvolution.1 in Resources */ = {isa = PBXBuildFile; fileRef = AA2BEF9D1A19657C006186EB /* GeneticEvolution.1 */; };
+		AA2BEFAA1A196585006186EB /* glm in Resources */ = {isa = PBXBuildFile; fileRef = AA2BEFA71A196585006186EB /* glm */; };
+		AA2BEFAB1A196585006186EB /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA2BEFA91A196585006186EB /* main.cpp */; };
+		AA2BEFAE1A1965C9006186EB /* ResourcePath.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA2BEFAD1A1965C9006186EB /* ResourcePath.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		AA2BEF501A196224006186EB /* GeneticEvolution2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GeneticEvolution2.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA2BEF541A196224006186EB /* GeneticEvolution2-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GeneticEvolution2-Info.plist"; sourceTree = "<group>"; };
-		AA2BEF551A196224006186EB /* ResourcePath.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ResourcePath.mm; sourceTree = "<group>"; };
-		AA2BEF571A196224006186EB /* ResourcePath.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = ResourcePath.hpp; sourceTree = "<group>"; };
-		AA2BEF581A196224006186EB /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
-		AA2BEF5B1A196224006186EB /* cute_image.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = cute_image.jpg; sourceTree = "<group>"; };
-		AA2BEF5D1A196224006186EB /* nice_music.ogg */ = {isa = PBXFileReference; lastKnownFileType = file; path = nice_music.ogg; sourceTree = "<group>"; };
-		AA2BEF5F1A196224006186EB /* sansation.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = sansation.ttf; sourceTree = "<group>"; };
-		AA2BEF611A196224006186EB /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
+		AA2BEF681A19633D006186EB /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
+		AA2BEF6A1A196369006186EB /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SDL2.framework; sourceTree = "<group>"; };
+		AA2BEF791A1963BC006186EB /* fragmentShader.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = fragmentShader.glsl; sourceTree = "<group>"; };
+		AA2BEF7A1A1963BC006186EB /* vertexShader.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = vertexShader.glsl; sourceTree = "<group>"; };
+		AA2BEF8E1A19657C006186EB /* EvolutionSystem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EvolutionSystem.cpp; sourceTree = "<group>"; };
+		AA2BEF8F1A19657C006186EB /* MainGame.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MainGame.cpp; sourceTree = "<group>"; };
+		AA2BEF901A19657C006186EB /* SoftBodyAgent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SoftBodyAgent.cpp; sourceTree = "<group>"; };
+		AA2BEF911A19657C006186EB /* SoftBodyAgent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SoftBodyAgent.h; sourceTree = "<group>"; };
+		AA2BEF921A19657C006186EB /* Spring.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Spring.cpp; sourceTree = "<group>"; };
+		AA2BEF931A19657C006186EB /* Camera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Camera.cpp; sourceTree = "<group>"; };
+		AA2BEF941A19657C006186EB /* MainGame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainGame.h; sourceTree = "<group>"; };
+		AA2BEF951A19657C006186EB /* EvolutionSystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EvolutionSystem.h; sourceTree = "<group>"; };
+		AA2BEF961A19657C006186EB /* Camera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Camera.h; sourceTree = "<group>"; };
+		AA2BEF971A19657C006186EB /* SoftBodyNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SoftBodyNode.h; sourceTree = "<group>"; };
+		AA2BEF981A19657C006186EB /* SoftBodyNode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SoftBodyNode.cpp; sourceTree = "<group>"; };
+		AA2BEF991A19657C006186EB /* Spring.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Spring.h; sourceTree = "<group>"; };
+		AA2BEF9A1A19657C006186EB /* GLManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GLManager.cpp; sourceTree = "<group>"; };
+		AA2BEF9B1A19657C006186EB /* PhysicsObject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PhysicsObject.cpp; sourceTree = "<group>"; };
+		AA2BEF9C1A19657C006186EB /* PhysicsObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhysicsObject.h; sourceTree = "<group>"; };
+		AA2BEF9D1A19657C006186EB /* GeneticEvolution.1 */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.man; path = GeneticEvolution.1; sourceTree = "<group>"; };
+		AA2BEFA71A196585006186EB /* glm */ = {isa = PBXFileReference; lastKnownFileType = folder; path = glm; sourceTree = "<group>"; };
+		AA2BEFA81A196585006186EB /* GLManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLManager.h; sourceTree = "<group>"; };
+		AA2BEFA91A196585006186EB /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		AA2BEFAC1A1965C9006186EB /* ResourcePath.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ResourcePath.hpp; sourceTree = "<group>"; };
+		AA2BEFAD1A1965C9006186EB /* ResourcePath.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ResourcePath.mm; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -32,6 +60,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AA2BEF6B1A196369006186EB /* SDL2.framework in Frameworks */,
+				AA2BEF691A19633D006186EB /* OpenGL.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -41,6 +71,8 @@
 		AA2BEF461A196224006186EB = {
 			isa = PBXGroup;
 			children = (
+				AA2BEF6A1A196369006186EB /* SDL2.framework */,
+				AA2BEF681A19633D006186EB /* OpenGL.framework */,
 				AA2BEF521A196224006186EB /* GeneticEvolution2 */,
 				AA2BEF511A196224006186EB /* Products */,
 			);
@@ -57,9 +89,27 @@
 		AA2BEF521A196224006186EB /* GeneticEvolution2 */ = {
 			isa = PBXGroup;
 			children = (
-				AA2BEF551A196224006186EB /* ResourcePath.mm */,
-				AA2BEF571A196224006186EB /* ResourcePath.hpp */,
-				AA2BEF581A196224006186EB /* main.cpp */,
+				AA2BEFA71A196585006186EB /* glm */,
+				AA2BEFA81A196585006186EB /* GLManager.h */,
+				AA2BEFAC1A1965C9006186EB /* ResourcePath.hpp */,
+				AA2BEFAD1A1965C9006186EB /* ResourcePath.mm */,
+				AA2BEFA91A196585006186EB /* main.cpp */,
+				AA2BEF8E1A19657C006186EB /* EvolutionSystem.cpp */,
+				AA2BEF8F1A19657C006186EB /* MainGame.cpp */,
+				AA2BEF941A19657C006186EB /* MainGame.h */,
+				AA2BEF901A19657C006186EB /* SoftBodyAgent.cpp */,
+				AA2BEF911A19657C006186EB /* SoftBodyAgent.h */,
+				AA2BEF921A19657C006186EB /* Spring.cpp */,
+				AA2BEF931A19657C006186EB /* Camera.cpp */,
+				AA2BEF951A19657C006186EB /* EvolutionSystem.h */,
+				AA2BEF961A19657C006186EB /* Camera.h */,
+				AA2BEF971A19657C006186EB /* SoftBodyNode.h */,
+				AA2BEF981A19657C006186EB /* SoftBodyNode.cpp */,
+				AA2BEF991A19657C006186EB /* Spring.h */,
+				AA2BEF9A1A19657C006186EB /* GLManager.cpp */,
+				AA2BEF9B1A19657C006186EB /* PhysicsObject.cpp */,
+				AA2BEF9C1A19657C006186EB /* PhysicsObject.h */,
+				AA2BEF9D1A19657C006186EB /* GeneticEvolution.1 */,
 				AA2BEF5A1A196224006186EB /* Resources */,
 				AA2BEF531A196224006186EB /* Supporting Files */,
 			);
@@ -77,10 +127,8 @@
 		AA2BEF5A1A196224006186EB /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				AA2BEF5B1A196224006186EB /* cute_image.jpg */,
-				AA2BEF5D1A196224006186EB /* nice_music.ogg */,
-				AA2BEF5F1A196224006186EB /* sansation.ttf */,
-				AA2BEF611A196224006186EB /* icon.png */,
+				AA2BEF791A1963BC006186EB /* fragmentShader.glsl */,
+				AA2BEF7A1A1963BC006186EB /* vertexShader.glsl */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -95,7 +143,6 @@
 				AA2BEF4B1A196224006186EB /* Sources */,
 				AA2BEF4C1A196224006186EB /* Frameworks */,
 				AA2BEF4D1A196224006186EB /* Resources */,
-				AA2BEF4E1A196224006186EB /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -142,38 +189,30 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AA2BEF621A196224006186EB /* icon.png in Resources */,
-				AA2BEF601A196224006186EB /* sansation.ttf in Resources */,
-				AA2BEF5E1A196224006186EB /* nice_music.ogg in Resources */,
-				AA2BEF5C1A196224006186EB /* cute_image.jpg in Resources */,
+				AA2BEF881A1963BC006186EB /* vertexShader.glsl in Resources */,
+				AA2BEFA61A19657C006186EB /* GeneticEvolution.1 in Resources */,
+				AA2BEF871A1963BC006186EB /* fragmentShader.glsl in Resources */,
+				AA2BEFAA1A196585006186EB /* glm in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		AA2BEF4E1A196224006186EB /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# This shell script simply copies required sfml dylibs/frameworks into the application bundle frameworks folder.\n# If you're using static libraries (which is not recommended) you should remove this script from your project.\n\n# Are we building a project that uses framework or dylibs ?\ncase \"$SFML_BINARY_TYPE\" in\n    DYLIBS)\n        frameworks=\"false\"\n        ;;\n    *)\n        frameworks=\"true\"\n        ;;\nesac\n\n# Echoes to stderr\nerror () # $* message to display\n{\n    echo $* 1>&2\n    exit 2\n}\n\nassert () # $1 is a boolean, $2...N is an error message\n{\n    if [ $# -lt 2 ]\n    then\n        error \"Internal error in assert : not enough args\"\n    fi\n\n    if [ $1 -ne 0 ]\n    then\n        shift\n        error \"$*\"\n    fi\n}\n\nforce_remove () # $1 is a path\n{\n    test $# -eq 1\n    assert $? \"force_remove() requires one parameter\"\n    rm -fr \"$1\"\n    assert $? \"couldn't remove $1\"\n}\n\ncopy () # $1 is a source, $2 is a destination\n{\n    test $# -eq 2\n    assert $? \"copy() requires two parameters\"\n    ditto \"$1\" \"$2\"\n    assert $? \"couldn't copy $1 to $2\"\n}\n\nrequire () # $1 is a SFML module like 'system' or 'audio'\n{\n    dest=\"$BUILT_PRODUCTS_DIR/$PRODUCT_NAME.app/Contents/Frameworks\"\n\n    if [ -z \"$1\" ]\n    then\n        error \"require() requires one parameter!\"\n    else\n        # clean potentially old stuff\n        force_remove \"$dest/libsfml-$1.2.dylib\"\n        force_remove \"$dest/libsfml-$1-d.2.dylib\"\n        force_remove \"$dest/sfml-$1.framework\"\n\n        # copy SFML libraries\n        if [ \"$frameworks\" = \"true\" ]\n        then\n            copy \"/Library/Frameworks/sfml-$1.framework\" \"$dest/sfml-$1.framework\"\n        elif [ \"$SFML_LINK_DYLIBS_SUFFIX\" = \"-d\" ]\n        then\n            copy \"/usr/local/lib/libsfml-$1-d.2.dylib\" \"$dest/libsfml-$1-d.2.dylib\"\n        else\n            copy \"/usr/local/lib/libsfml-$1.2.dylib\" \"$dest/libsfml-$1.2.dylib\"\n        fi\n\n        if [ \"$1\" = \"audio\" ]\n        then\n            # copy sndfile framework too\n            copy \"/Library/Frameworks/sndfile.framework\" \"$dest/sndfile.framework\"\n        fi\n\n        if [ \"$1\" = \"graphics\" ]\n        then\n            # copy freetype framework too\n            copy \"/Library/Frameworks/freetype.framework\" \"$dest/freetype.framework\"\n        fi\n    fi\n}\n\nif [ -n \"$SFML_SYSTEM\" ]\nthen\n    require \"system\"\nfi\n\nif [ -n \"$SFML_AUDIO\" ]\nthen\n    require \"audio\"\nfi\n\nif [ -n \"$SFML_NETWORK\" ]\nthen\n    require \"network\"\nfi\n\nif [ -n \"$SFML_WINDOW\" ]\nthen\n    require \"window\"\nfi\n\nif [ -n \"$SFML_GRAPHICS\" ]\nthen\n    require \"graphics\"\nfi\n\n                ";
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		AA2BEF4B1A196224006186EB /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AA2BEF591A196224006186EB /* main.cpp in Sources */,
-				AA2BEF561A196224006186EB /* ResourcePath.mm in Sources */,
+				AA2BEFA41A19657C006186EB /* GLManager.cpp in Sources */,
+				AA2BEF9F1A19657C006186EB /* MainGame.cpp in Sources */,
+				AA2BEFAE1A1965C9006186EB /* ResourcePath.mm in Sources */,
+				AA2BEFAB1A196585006186EB /* main.cpp in Sources */,
+				AA2BEFA01A19657C006186EB /* SoftBodyAgent.cpp in Sources */,
+				AA2BEFA21A19657C006186EB /* Camera.cpp in Sources */,
+				AA2BEFA51A19657C006186EB /* PhysicsObject.cpp in Sources */,
+				AA2BEFA31A19657C006186EB /* SoftBodyNode.cpp in Sources */,
+				AA2BEFA11A19657C006186EB /* Spring.cpp in Sources */,
+				AA2BEF9E1A19657C006186EB /* EvolutionSystem.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -210,25 +249,6 @@
 					"$(inherited)",
 				);
 				ONLY_ACTIVE_ARCH = NO;
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					"$(SFML_SYSTEM)",
-					"$(SFML_WINDOW)",
-					"$(SFML_GRAPHICS)",
-					"$(SFML_AUDIO)",
-					"$(SFML_NETWORK)",
-				);
-				SFML_AUDIO = "";
-				SFML_BINARY_TYPE = FRAMEWORKS;
-				SFML_LINK_DYLIBS_PREFIX = "-l";
-				SFML_LINK_DYLIBS_SUFFIX = "";
-				SFML_LINK_FRAMEWORKS_PREFIX = "-framework";
-				SFML_LINK_FRAMEWORKS_SUFFIX = "";
-				SFML_LINK_PREFIX = "$(SFML_LINK_$(SFML_BINARY_TYPE)_PREFIX)";
-				SFML_LINK_SUFFIX = "$(SFML_LINK_$(SFML_BINARY_TYPE)_SUFFIX)";
-				SFML_NETWORK = "";
-				SFML_SYSTEM = "$(SFML_LINK_PREFIX) sfml-system$(SFML_LINK_SUFFIX)";
-				SFML_WINDOW = "";
 				SUPPORTED_PLATFORMS = macosx;
 			};
 			name = Debug;
@@ -259,25 +279,6 @@
 					"$(inherited)",
 				);
 				ONLY_ACTIVE_ARCH = NO;
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					"$(SFML_SYSTEM)",
-					"$(SFML_WINDOW)",
-					"$(SFML_GRAPHICS)",
-					"$(SFML_AUDIO)",
-					"$(SFML_NETWORK)",
-				);
-				SFML_AUDIO = "";
-				SFML_BINARY_TYPE = FRAMEWORKS;
-				SFML_LINK_DYLIBS_PREFIX = "-l";
-				SFML_LINK_DYLIBS_SUFFIX = "";
-				SFML_LINK_FRAMEWORKS_PREFIX = "-framework";
-				SFML_LINK_FRAMEWORKS_SUFFIX = "";
-				SFML_LINK_PREFIX = "$(SFML_LINK_$(SFML_BINARY_TYPE)_PREFIX)";
-				SFML_LINK_SUFFIX = "$(SFML_LINK_$(SFML_BINARY_TYPE)_SUFFIX)";
-				SFML_NETWORK = "";
-				SFML_SYSTEM = "$(SFML_LINK_PREFIX) sfml-system$(SFML_LINK_SUFFIX)";
-				SFML_WINDOW = "";
 				SUPPORTED_PLATFORMS = macosx;
 			};
 			name = Release;
@@ -285,16 +286,34 @@
 		AA2BEF661A196224006186EB /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				INFOPLIST_FILE = "GeneticEvolution2/GeneticEvolution2-Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SFML_BINARY_TYPE = "";
+				SFML_LINK_DYLIBS_PREFIX = "";
+				SFML_SYSTEM = "";
 			};
 			name = Debug;
 		};
 		AA2BEF671A196224006186EB /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				INFOPLIST_FILE = "GeneticEvolution2/GeneticEvolution2-Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SFML_BINARY_TYPE = "";
+				SFML_LINK_DYLIBS_PREFIX = "";
+				SFML_SYSTEM = "";
 			};
 			name = Release;
 		};
