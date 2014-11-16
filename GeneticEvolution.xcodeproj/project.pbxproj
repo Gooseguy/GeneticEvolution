@@ -26,8 +26,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		AA2BEF501A196224006186EB /* GeneticEvolution2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GeneticEvolution2.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		AA2BEF541A196224006186EB /* GeneticEvolution2-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GeneticEvolution2-Info.plist"; sourceTree = "<group>"; };
+		AA2BEF501A196224006186EB /* GeneticEvolution.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GeneticEvolution.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		AA2BEF541A196224006186EB /* GeneticEvolution-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GeneticEvolution-Info.plist"; sourceTree = "<group>"; };
 		AA2BEF681A19633D006186EB /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		AA2BEF6A1A196369006186EB /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SDL2.framework; sourceTree = "<group>"; };
 		AA2BEF791A1963BC006186EB /* fragmentShader.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = fragmentShader.glsl; sourceTree = "<group>"; };
@@ -81,7 +81,7 @@
 		AA2BEF511A196224006186EB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				AA2BEF501A196224006186EB /* GeneticEvolution2.app */,
+				AA2BEF501A196224006186EB /* GeneticEvolution.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -119,7 +119,7 @@
 		AA2BEF531A196224006186EB /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				AA2BEF541A196224006186EB /* GeneticEvolution2-Info.plist */,
+				AA2BEF541A196224006186EB /* GeneticEvolution-Info.plist */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -136,9 +136,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		AA2BEF4F1A196224006186EB /* GeneticEvolution2 */ = {
+		AA2BEF4F1A196224006186EB /* GeneticEvolution */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = AA2BEF651A196224006186EB /* Build configuration list for PBXNativeTarget "GeneticEvolution2" */;
+			buildConfigurationList = AA2BEF651A196224006186EB /* Build configuration list for PBXNativeTarget "GeneticEvolution" */;
 			buildPhases = (
 				AA2BEF4B1A196224006186EB /* Sources */,
 				AA2BEF4C1A196224006186EB /* Frameworks */,
@@ -148,9 +148,9 @@
 			);
 			dependencies = (
 			);
-			name = GeneticEvolution2;
+			name = GeneticEvolution;
 			productName = GeneticEvolution2;
-			productReference = AA2BEF501A196224006186EB /* GeneticEvolution2.app */;
+			productReference = AA2BEF501A196224006186EB /* GeneticEvolution.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -167,7 +167,7 @@
 					};
 				};
 			};
-			buildConfigurationList = AA2BEF4A1A196224006186EB /* Build configuration list for PBXProject "GeneticEvolution2" */;
+			buildConfigurationList = AA2BEF4A1A196224006186EB /* Build configuration list for PBXProject "GeneticEvolution" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -179,7 +179,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				AA2BEF4F1A196224006186EB /* GeneticEvolution2 */,
+				AA2BEF4F1A196224006186EB /* GeneticEvolution */,
 			);
 		};
 /* End PBXProject section */
@@ -290,10 +290,10 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)",
 				);
-				INFOPLIST_FILE = "GeneticEvolution2/GeneticEvolution2-Info.plist";
+				INFOPLIST_FILE = "GeneticEvolution2/GeneticEvolution-Info.plist";
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				OTHER_LDFLAGS = "";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = GeneticEvolution;
 				SFML_BINARY_TYPE = "";
 				SFML_LINK_DYLIBS_PREFIX = "";
 				SFML_SYSTEM = "";
@@ -307,10 +307,10 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)",
 				);
-				INFOPLIST_FILE = "GeneticEvolution2/GeneticEvolution2-Info.plist";
+				INFOPLIST_FILE = "GeneticEvolution2/GeneticEvolution-Info.plist";
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				OTHER_LDFLAGS = "";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = GeneticEvolution;
 				SFML_BINARY_TYPE = "";
 				SFML_LINK_DYLIBS_PREFIX = "";
 				SFML_SYSTEM = "";
@@ -320,7 +320,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		AA2BEF4A1A196224006186EB /* Build configuration list for PBXProject "GeneticEvolution2" */ = {
+		AA2BEF4A1A196224006186EB /* Build configuration list for PBXProject "GeneticEvolution" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				AA2BEF631A196224006186EB /* Debug */,
@@ -329,7 +329,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		AA2BEF651A196224006186EB /* Build configuration list for PBXNativeTarget "GeneticEvolution2" */ = {
+		AA2BEF651A196224006186EB /* Build configuration list for PBXNativeTarget "GeneticEvolution" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				AA2BEF661A196224006186EB /* Debug */,
