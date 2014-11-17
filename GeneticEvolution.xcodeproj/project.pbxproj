@@ -123,9 +123,9 @@
 				AA2BEF9B1A19657C006186EB /* PhysicsObject.cpp */,
 				AA2BEF9C1A19657C006186EB /* PhysicsObject.h */,
 				AA2BEF9D1A19657C006186EB /* GeneticEvolution.1 */,
+				AA149C861A198641001D1A5F /* RandomUtil.cpp */,
 				AA2BEF5A1A196224006186EB /* Resources */,
 				AA2BEF531A196224006186EB /* Supporting Files */,
-				AA149C861A198641001D1A5F /* RandomUtil.cpp */,
 				AA149C871A198641001D1A5F /* RandomUtil.h */,
 			);
 			path = GeneticEvolution2;
