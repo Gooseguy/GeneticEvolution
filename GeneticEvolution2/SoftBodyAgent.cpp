@@ -86,12 +86,13 @@ void SoftBodyAgent::Update(float timeStep, int currentTime)
 //    float averageHeight = 0;
     for (auto& node : nodes)
     {
-//        if (lowestNode==nullptr) lowestNode = &node;
-//        else if (node.Position.z < lowestNode->Position.z) lowestNode=&node;
+        if (lowestNode==nullptr) lowestNode = &node;
+        else if (node.Position.z < lowestNode->Position.z) lowestNode=&node;
         averageDisp+=node.Position;
     }
     averageDisp/=nodes.size();
-    TotalMinimumHeight+=glm::length(averageDisp);//lowestNode->Position.z;
+    TotalMinimumHeight+=lowestNode->Position.z;
+    TotalDistance+=glm::length(averageDisp);//lowestNode->Position.z;
 }
 
 void SoftBodyAgent::addSpring(std::size_t node1, std::size_t node2)
@@ -100,6 +101,14 @@ void SoftBodyAgent::addSpring(std::size_t node1, std::size_t node2)
     springs.push_back(Spring(node1, node2, nodes));
     nodes[node1].AddSpring(idx);
     nodes[node2].AddSpring(idx);
+}
+
+void SoftBodyAgent::RemoveNode(std::size_t node)
+{
+    for (int i = 0; i<nodes[node].GetSpringsUsed();++i)
+    {
+        springs.erase(springs.begin() + nodes[node].springs[i]);
+    }
 }
 
 void SoftBodyAgent::Mutate()
@@ -116,6 +125,12 @@ void SoftBodyAgent::Mutate()
 //        if (pos.z < 0.01) pos.z = 0.01;
 ////
 //    }
+    for (int i = 0; i<nodes.size();++i)
+    {
+        if (RandomUtils::Instance.UniformFloat() < 0.001)
+            RemoveNode(i);
+    }
+    
     for (Spring& spring : springs)
     {
         spring.ExtensionAmount+=RandomUtils::Instance.Normal<float>(0, extensionAmountVariance);

@@ -24,7 +24,9 @@ public:
     std::vector<Spring> springs;
     std::vector<glm::vec3> initialPositions;
     void Mutate();
+    void RemoveNode(std::size_t node);
     float TotalMinimumHeight;
+    float TotalDistance;
     glm::vec3 color;
 private:
     inline int initialNodeIndex(int x, int y, int z);

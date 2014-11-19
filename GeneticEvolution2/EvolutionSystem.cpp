@@ -14,8 +14,9 @@ TIME_STEP(0.0005),
 CurrentRenderMode(RenderMode::POINT),
 generationLength(8./TIME_STEP),
 outputFileLocation(_outputFileLocation),
-currentFunction(0)
+currentFunction(1)
 {
+    configurePerformanceFunctions();
     for (int i = 0; i<NUM_AGENTS;++i)
         agents.push_back(new SoftBodyAgent(glm::vec3(0,0,0.01), glm::vec3(RandomUtils::Instance.UniformFloat(),RandomUtils::Instance.UniformFloat(),RandomUtils::Instance.UniformFloat())));
     selectedAgent=agents[0];
@@ -164,6 +165,8 @@ void EvolutionSystem::nextGeneration()
 void EvolutionSystem::configurePerformanceFunctions()
 {
     performanceFunctions.push_back(std::function<float(SoftBodyAgent&)>([this](SoftBodyAgent& agent) {
+        return 0.1f + agent.TotalDistance / generationLength;
+    }));performanceFunctions.push_back(std::function<float(SoftBodyAgent&)>([this](SoftBodyAgent& agent) {
         return 0.1f + agent.TotalMinimumHeight / generationLength;
     }));
 }
