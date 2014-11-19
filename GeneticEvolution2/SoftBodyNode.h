@@ -8,28 +8,29 @@
 #pragma once
 #include "PhysicsObject.h"
 #include <array>
-#include "Spring.h"
+class Spring;
 class SoftBodyNode : public PhysicsObject
 {
 public:
     SoftBodyNode(glm::vec3 position);
+    SoftBodyNode(const SoftBodyNode& node);
     void Update(float timeStep) override;
     inline int GetSpringsUsed();
-    inline void AddSpring(Spring* spring);
+    inline void AddSpring(std::size_t spring);
+    std::size_t springsUsed;
+    static const int MAX_SPRINGS = 64;
+    std::array<std::size_t, MAX_SPRINGS> springs;
 private:
-    static const int MAX_SPRINGS = 5;
-    std::array<Spring*, MAX_SPRINGS> springs;
 };
 
 int SoftBodyNode::GetSpringsUsed()
 {
-    int i;
-    for (i = 0; springs[i]!=nullptr;++i);
-    return i;
+    return springsUsed;
 }
-void SoftBodyNode::AddSpring(Spring* spring)
+void SoftBodyNode::AddSpring(std::size_t spring)
 {
-    int i = GetSpringsUsed();
-    springs[i]=spring;
+    springs[springsUsed]=spring;
+    springsUsed++;
+    if (springsUsed>=MAX_SPRINGS) throw std::out_of_range("Out of range");
     //this will throw an error if the maximum number of springs is exceeded for a single node.
 }

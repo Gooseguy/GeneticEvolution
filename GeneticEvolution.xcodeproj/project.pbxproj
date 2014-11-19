@@ -23,6 +23,7 @@
 		AA2BEFAA1A196585006186EB /* glm in Resources */ = {isa = PBXBuildFile; fileRef = AA2BEFA71A196585006186EB /* glm */; };
 		AA2BEFAB1A196585006186EB /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA2BEFA91A196585006186EB /* main.cpp */; };
 		AA2BEFAE1A1965C9006186EB /* ResourcePath.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA2BEFAD1A1965C9006186EB /* ResourcePath.mm */; };
+		CA9CFCAA1A1A568C00687979 /* RandomUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA9CFCA81A1A568C00687979 /* RandomUtils.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -54,6 +55,8 @@
 		AA2BEFA91A196585006186EB /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		AA2BEFAC1A1965C9006186EB /* ResourcePath.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ResourcePath.hpp; sourceTree = "<group>"; };
 		AA2BEFAD1A1965C9006186EB /* ResourcePath.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ResourcePath.mm; sourceTree = "<group>"; };
+		CA9CFCA81A1A568C00687979 /* RandomUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RandomUtils.cpp; sourceTree = "<group>"; };
+		CA9CFCA91A1A568C00687979 /* RandomUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RandomUtils.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -122,6 +125,8 @@
 				AA2BEF9D1A19657C006186EB /* GeneticEvolution.1 */,
 				AA2BEF5A1A196224006186EB /* Resources */,
 				AA2BEF531A196224006186EB /* Supporting Files */,
+				CA9CFCA81A1A568C00687979 /* RandomUtils.cpp */,
+				CA9CFCA91A1A568C00687979 /* RandomUtils.h */,
 			);
 			path = GeneticEvolution2;
 			sourceTree = "<group>";
@@ -217,6 +222,7 @@
 				AA2BEF9F1A19657C006186EB /* MainGame.cpp in Sources */,
 				AA2BEFAE1A1965C9006186EB /* ResourcePath.mm in Sources */,
 				AA2BEFAB1A196585006186EB /* main.cpp in Sources */,
+				CA9CFCAA1A1A568C00687979 /* RandomUtils.cpp in Sources */,
 				AA2BEFA01A19657C006186EB /* SoftBodyAgent.cpp in Sources */,
 				AA2BEFA21A19657C006186EB /* Camera.cpp in Sources */,
 				AA2BEFA51A19657C006186EB /* PhysicsObject.cpp in Sources */,

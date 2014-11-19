@@ -9,91 +9,129 @@
 #include "SoftBodyAgent.h"
 #include <OpenGL/gl3.h>
 #include "glm/gtx/euler_angles.hpp"
-const float SoftBodyAgent::NODE_SPACING = 0.1f;
+#include "RandomUtils.h"
+#include "Spring.h"
+const float SoftBodyAgent::NODE_SPACING = 0.05f;
 
-SoftBodyAgent::SoftBodyAgent(glm::vec3 pos)
+SoftBodyAgent::SoftBodyAgent(glm::vec3 pos, glm::vec3 _color) : TotalMinimumHeight(0),color(_color)
 {
+    glm::mat3 rotMat =glm::mat3();//glm::mat3(glm::eulerAngleXZ(30*3.141f/180,0.f));
     for (int i = 0; i<INITIAL_CUBE_WIDTH;++i)
         for (int j = 0; j<INITIAL_CUBE_WIDTH;++j)
             for (int k = 0; k<INITIAL_CUBE_WIDTH;++k)
             {
-                nodes.push_back(new SoftBodyNode(pos + glm::mat3(glm::eulerAngleXZ(30*3.141f/180,0.f)) * glm::vec3(i*NODE_SPACING,j*NODE_SPACING,k*NODE_SPACING)));
+                nodes.push_back(SoftBodyNode(pos + rotMat * glm::vec3(i*NODE_SPACING,j*NODE_SPACING,k*NODE_SPACING)));
             }
-    for (int i = 1; i<INITIAL_CUBE_WIDTH-1;++i)
-        for (int j = 0; j<INITIAL_CUBE_WIDTH;++j)
-            for (int k = 0; k<INITIAL_CUBE_WIDTH;++k)
-            {
-                addSpring(initialNodeIndex(i, j, k), initialNodeIndex(i+1, j, k));
-                addSpring(initialNodeIndex(i, j, k), initialNodeIndex(i-1, j, k));
-            }
+    for (auto& node : nodes) initialPositions.push_back(node.Position);
+    addSpringDisplacement(1, 0, 0);
+    addSpringDisplacement(0, 1, 0);
+    addSpringDisplacement(0, 0, 1);
+    addSpringDisplacement(1, 0, 1);
+    addSpringDisplacement(1, 1, 0);
+    addSpringDisplacement(0, 1, 1);
+    addSpringDisplacement(-1, 0, 0);
+    addSpringDisplacement(0, -1, 0);
+    addSpringDisplacement(0, 0, -1);
+    addSpringDisplacement(1, 0, -1);
+    addSpringDisplacement(1, -1, 0);
+    addSpringDisplacement(0, 1, -1);
+    addSpringDisplacement(-1, 0, 1);
+    addSpringDisplacement(-1, 1, 0);
+    addSpringDisplacement(0, -1, 1);
+    addSpringDisplacement(-1, 0, -1);
+    addSpringDisplacement(-1, -1, 0);
+    addSpringDisplacement(0, -1, -1);
     
-    for (int i = 0; i<INITIAL_CUBE_WIDTH;++i)
-        for (int j = 1; j<INITIAL_CUBE_WIDTH-1;++j)
-            for (int k = 0; k<INITIAL_CUBE_WIDTH;++k)
-            {
-                addSpring(initialNodeIndex(i, j, k), initialNodeIndex(i, j+1, k));
-                addSpring(initialNodeIndex(i, j, k), initialNodeIndex(i, j-1, k));
-            }
-    for (int i = 0; i<INITIAL_CUBE_WIDTH;++i)
-        for (int j = 0; j<INITIAL_CUBE_WIDTH;++j)
-            for (int k = 1; k<INITIAL_CUBE_WIDTH-1;++k)
-            {
-                addSpring(initialNodeIndex(i, j, k), initialNodeIndex(i, j, k+1));
-                addSpring(initialNodeIndex(i, j, k), initialNodeIndex(i, j, k-1));
-            }
-    
-    for (int i = 1; i<INITIAL_CUBE_WIDTH-1;++i)
-        for (int j = 1; j<INITIAL_CUBE_WIDTH-1;++j)
-            for (int k = 0; k<INITIAL_CUBE_WIDTH;++k)
-            {
-                addSpring(initialNodeIndex(i, j, k), initialNodeIndex(i+1, j+1, k));
-                addSpring(initialNodeIndex(i, j, k), initialNodeIndex(i+1, j-1, k));
-                addSpring(initialNodeIndex(i, j, k), initialNodeIndex(i-1, j-1, k));
-                addSpring(initialNodeIndex(i, j, k), initialNodeIndex(i-1, j+1, k));
-            }
-    for (int i = 0; i<INITIAL_CUBE_WIDTH;++i)
-        for (int j = 1; j<INITIAL_CUBE_WIDTH-1;++j)
-            for (int k = 1; k<INITIAL_CUBE_WIDTH-1;++k)
-            {
-                addSpring(initialNodeIndex(i, j, k), initialNodeIndex(i, j+1, k+1));
-                addSpring(initialNodeIndex(i, j, k), initialNodeIndex(i, j+1, k-1));
-                addSpring(initialNodeIndex(i, j, k), initialNodeIndex(i, j-1, k+1));
-                addSpring(initialNodeIndex(i, j, k), initialNodeIndex(i, j-1, k-1));
-            }
-    for (int i = 1; i<INITIAL_CUBE_WIDTH-1;++i)
-        for (int j = 0; j<INITIAL_CUBE_WIDTH;++j)
-            for (int k = 1; k<INITIAL_CUBE_WIDTH-1;++k)
-            {
-                addSpring(initialNodeIndex(i, j, k), initialNodeIndex(i+1, j, k+1));
-                addSpring(initialNodeIndex(i, j, k), initialNodeIndex(i+1, j, k-1));
-                addSpring(initialNodeIndex(i, j, k), initialNodeIndex(i-1, j, k+1));
-                addSpring(initialNodeIndex(i, j, k), initialNodeIndex(i-1, j, k-1));
-            }
+    addSpringDisplacement(1, 1, 1);
+    addSpringDisplacement(1, 1, -1);
+    addSpringDisplacement(1, -1, 1);
+    addSpringDisplacement(-1, 1, 1);
+    addSpringDisplacement(-1, -1, 1);
+    addSpringDisplacement(-1, 1, -1);
+    addSpringDisplacement(1, -1, -1);
+    addSpringDisplacement(-1, -1, -1);
     
 }
 
-void SoftBodyAgent::Update(float timeStep)
+SoftBodyAgent::SoftBodyAgent(const SoftBodyAgent& agent) :
+initialPositions(agent.initialPositions),
+TotalMinimumHeight(0),
+color(agent.color)
+{
+    for (int i = 0; i<agent.nodes.size();++i)
+    {
+        nodes.push_back(SoftBodyNode(agent.initialPositions[i]));
+    }
+    for (auto& spring : agent.springs)
+        springs.push_back(Spring(spring));
+    Mutate();
+    
+}
+
+#include<iostream>
+SoftBodyAgent::~SoftBodyAgent()
+{
+//    for (auto& node : nodes) { delete node; node=nullptr; }
+//    std::cout << "Destructed." << std::endl;
+}
+
+void SoftBodyAgent::Update(float timeStep, int currentTime)
 {
     for (auto& spring : springs)
-    {
-        spring.ApplyForces();
-    }
+        spring.ApplyForces(currentTime, nodes);
+    for (auto& node : nodes)
+        node.Update(timeStep);
+    SoftBodyNode* lowestNode = nullptr;
+    glm::vec3 averageDisp=glm::vec3();
+//    float averageHeight = 0;
     for (auto& node : nodes)
     {
-        node->Update(timeStep);
+//        if (lowestNode==nullptr) lowestNode = &node;
+//        else if (node.Position.z < lowestNode->Position.z) lowestNode=&node;
+        averageDisp+=node.Position;
     }
+    averageDisp/=nodes.size();
+    TotalMinimumHeight+=glm::length(averageDisp);//lowestNode->Position.z;
 }
 
-
-void SoftBodyAgent::addSpring(SoftBodyNode *node1, SoftBodyNode *node2)
+void SoftBodyAgent::addSpring(std::size_t node1, std::size_t node2)
 {
     std::size_t idx = springs.size();
-    springs.push_back(Spring(node1, node2));
-    node1->AddSpring(&springs[idx]);
-    node2->AddSpring(&springs[idx]);
+    springs.push_back(Spring(node1, node2, nodes));
+    nodes[node1].AddSpring(idx);
+    nodes[node2].AddSpring(idx);
 }
 
-void SoftBodyAgent::addSpring(int node1, int node2)
+void SoftBodyAgent::Mutate()
 {
-    addSpring(nodes[node1], nodes[node2]);
+    const float extensionAmountVariance = 0.1;
+    const float extensionPeriodVariance = 0.1;
+    const float extensionLengthVariance = 0.9;
+    const float extensionOffsetVariance = 0.9;
+//    for (auto& pos : initialPositions)
+//    {
+//        pos.x+=RandomUtils::Instance.Normal<float>(0, 0.01);
+//        pos.y+=RandomUtils::Instance.Normal<float>(0, 0.01);
+//        pos.z+=RandomUtils::Instance.Normal<float>(0, 0.01);
+//        if (pos.z < 0.01) pos.z = 0.01;
+////
+//    }
+    for (Spring& spring : springs)
+    {
+        spring.ExtensionAmount+=RandomUtils::Instance.Normal<float>(0, extensionAmountVariance);
+        float extensionAmountMax=spring.EquilibriumDist*5;
+        if (spring.ExtensionAmount>extensionAmountMax)spring.ExtensionAmount=extensionAmountMax;
+        else if (spring.ExtensionAmount<-extensionAmountMax)spring.ExtensionAmount=-extensionAmountMax;
+//        spring.EquilibriumDist+=RandomUtils::Instance.Normal<float>(0, 0.1);
+        spring.ExtensionLength+=RandomUtils::Instance.Normal<float>(0, extensionLengthVariance);
+        spring.ExtensionOffset+=RandomUtils::Instance.Normal<float>(0, extensionOffsetVariance);
+        spring.ExtensionLength%=spring.ExtensionPeriod;
+        spring.ExtensionOffset%=spring.ExtensionPeriod;
+        color.x+=RandomUtils::Instance.Normal<float>(0.f, 0.05f);
+        color.y+=RandomUtils::Instance.Normal<float>(0.f, 0.05f);
+        color.z+=RandomUtils::Instance.Normal<float>(0.f, 0.05f);
+        color = glm::normalize(color);
+//        spring.ExtensionPeriod+=RandomUtils::Instance.Normal<float>(0, extensionPeriodVariance);
+//        if (spring.ExtensionPeriod<1)spring.ExtensionPeriod=1;
+    }
 }

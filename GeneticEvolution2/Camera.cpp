@@ -11,7 +11,7 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtx/quaternion.hpp"
 Camera::Camera(int windowWidth, int windowHeight) :
-FieldOfView(90),
+FieldOfView(50),
 aspectRatio((float)windowWidth/windowHeight),
 NEAR_PLANE(0.000001),
 FAR_PLANE(100),

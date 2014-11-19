@@ -7,11 +7,14 @@
 //
 
 #include "SoftBodyNode.h"
-SoftBodyNode::SoftBodyNode(glm::vec3 pos) : PhysicsObject(pos,1)
+SoftBodyNode::SoftBodyNode(glm::vec3 pos) : PhysicsObject(pos,1), springsUsed(0)
 {
-    for (auto& p : springs) p=nullptr;
+    
 }
 
+SoftBodyNode::SoftBodyNode(const SoftBodyNode& node) : PhysicsObject(node.Position, node.Mass), springsUsed(node.springsUsed), springs(node.springs)
+{
+}
 
 void SoftBodyNode::Update(float timeStep)
 {

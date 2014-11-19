@@ -13,6 +13,7 @@
 #include "Camera.h"
 #include "glm/gtc/type_ptr.hpp"
 #include "ResourcePath.hpp"
+#include <fstream>
 
 MainGame::MainGame()
 {
@@ -30,9 +31,12 @@ MainGame::MainGame()
     SDL_GLContext context = SDL_GL_CreateContext(window);
     if (context==nullptr) throw std::logic_error("SDL_GL could not be initialized!");
     
-    GLManager glManager(resourcePath() + "/fragmentShader.glsl", resourcePath() + "/vertexShader.glsl");
-    
-    EvolutionSystem evolutionSystem;
+    GLManager glManager(resourcePath() + "fragmentShader.glsl", resourcePath() + "vertexShader.glsl");
+    std::string fileLoc =resourcePath() + "performance.csv";
+    {
+        std::ofstream stream(fileLoc, std::ios::out);
+    }
+    EvolutionSystem evolutionSystem(fileLoc);
     Camera camera(1280, 720);
     
     while (GameState!=GameState::EXIT)
@@ -49,7 +53,7 @@ MainGame::MainGame()
 void MainGame::Update(EvolutionSystem& evolutionSystem)
 {
     for (int i = 0; i<50;++i)
-    evolutionSystem.Update();
+        evolutionSystem.Update();
 }
 
 void MainGame::Draw(EvolutionSystem& evolutionSystem)

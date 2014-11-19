@@ -42,7 +42,8 @@ void GLManager::initGL()
     glDisable(GL_CULL_FACE);
     glDisable(GL_DEPTH_TEST);
     glPointSize(5);
-//    glEnable(GL_MULTISAMPLE);
+    glEnable(GL_MULTISAMPLE);
+    
 }
 //compile an OpenGL shader
 GLuint GLProgram::CompileShader(const std::string& shaderName, GLenum type)
