@@ -55,6 +55,9 @@ private:
     std::string outputFileLocation;
     bool accelerate;
     void updateAgent(SoftBodyAgent* agent);
+    std::vector<Vertex> baseGrid;
+    void constructBaseGrid();
+    const float gridSquareLength;
 };
 
 void EvolutionSystem::ToggleAccelerated()

@@ -10,7 +10,10 @@
 #include "RandomUtils.h"
 #include <fstream>
 #include <thread>
-EvolutionSystem::EvolutionSystem(std::string _outputFileLocation) : NUM_AGENTS(100),
+
+#include <iostream>
+EvolutionSystem::EvolutionSystem(std::string _outputFileLocation) : NUM_AGENTS(50),
+gridSquareLength(0.05),
 TIME_STEP(0.0005),
 CurrentRenderMode(RenderMode::POINT_ALL),
 generationLength(8./TIME_STEP),
@@ -22,18 +25,12 @@ selectedAgent(0)
     configurePerformanceFunctions();
     for (int i = 0; i<NUM_AGENTS;++i)
         agents.push_back(new SoftBodyAgent(glm::vec3(0,0,0.01), glm::vec3(RandomUtils::UniformFloat(),RandomUtils::UniformFloat(),RandomUtils::UniformFloat())));
+    constructBaseGrid();
     generateBuffers();
     updateBuffers();
 }
-static const EvolutionSystem::Vertex g_quad_vertex_buffer_data[] = {
-    EvolutionSystem::Vertex(-1.0f, -1.0f, 0.0f, 1.f,0.f,0.f),
-    EvolutionSystem::Vertex(1.0f, -1.0f, 0.0f, 1.f,0.f,0.f),
-    EvolutionSystem::Vertex(-1.0f,  1.0f, 0.0f, 1.f,0.f,0.f),
-    EvolutionSystem::Vertex(-1.0f,  1.0f, 0.0f, 1.f,0.f,0.f),
-    EvolutionSystem::Vertex(1.0f, -1.0f, 0.0f, 1.f,0.f,0.f),
-    EvolutionSystem::Vertex(1.0f,  1.0f, 0.0f, 1.f,0.f,0.f),
-};
-#include <iostream>
+
+
 void EvolutionSystem::generateBuffers()
 {
     glGenVertexArrays(1,&vao);
@@ -49,13 +46,27 @@ void EvolutionSystem::generateBuffers()
     glBindVertexArray(0);
 }
 
+void EvolutionSystem::constructBaseGrid()
+{
+    for (float i = -1; i<=1+gridSquareLength;i+=gridSquareLength)
+    {
+        baseGrid.push_back(Vertex(-1,i,0,1.f,0,0));
+        baseGrid.push_back(Vertex(1,i,0,1.f,0,0));
+    }
+    for (float i = -1; i<=1+gridSquareLength;i+=gridSquareLength)
+    {
+        baseGrid.push_back(Vertex(i,-1,0,1.f,0,0));
+        baseGrid.push_back(Vertex(i,1,0,1.f,0,0));
+    }
+}
+
 void EvolutionSystem::updateBuffers()
 {
     vertices.clear();
     indices.clear();
     {
         int currentIndex = 0;
-        for (auto& vertex : g_quad_vertex_buffer_data)
+        for (auto& vertex : baseGrid)
         {
             vertices.push_back(vertex);
             indices.push_back(currentIndex);
@@ -161,7 +172,7 @@ void EvolutionSystem::updateAgent(SoftBodyAgent *agent)
             if (node.Position.z < 0)
             {
                 float normalForce =-node.Position.z*10000 - node.NetForce.z;
-                const float k_friction = 0.9;
+                const float k_friction = 0.1;
                 node.ApplyForce(glm::vec3(0,0,normalForce));
                 if (node.Velocity.x!=0 && node.Velocity.y!=0)
                     node.ApplyForce(-normalForce * k_friction * glm::normalize(glm::vec3(node.Velocity.x,node.Velocity.y,0)));
@@ -197,7 +208,6 @@ void EvolutionSystem::Update()
         
     }
 }
-
 void EvolutionSystem::nextGeneration()
 {
     std::ofstream stream(outputFileLocation, std::ios::out | std::ios::app);
@@ -223,7 +233,9 @@ void EvolutionSystem::nextGeneration()
     std::vector<SoftBodyAgent*> newAgents(agents.size());
     for (int i = 0; i<agents.size();++i)
     {
-        newAgents[i] = new SoftBodyAgent(*agents[(int)distribution(RandomUtils::rand)]);
+        int index =(int)distribution(RandomUtils::rand);
+        if (index > agents.size()-1) index = agents.size()-1;
+        newAgents[i] = new SoftBodyAgent(*agents[index]);
     }
 
     for (auto& agent : agents) delete agent;
@@ -233,8 +245,8 @@ void EvolutionSystem::nextGeneration()
 void EvolutionSystem::configurePerformanceFunctions()
 {
     performanceFunctions.push_back(std::function<float(SoftBodyAgent&)>([this](SoftBodyAgent& agent) {
-        return pow(0.1f + agent.TotalDistance / generationLength, 0.5);
+        return pow(0.1f + agent.TotalDistance / generationLength,2);
     }));performanceFunctions.push_back(std::function<float(SoftBodyAgent&)>([this](SoftBodyAgent& agent) {
-        return pow(0.1f + agent.TotalMinimumHeight / generationLength,0.5);
+        return pow(0.1f + agent.TotalMinimumHeight / generationLength,2);
     }));
 }

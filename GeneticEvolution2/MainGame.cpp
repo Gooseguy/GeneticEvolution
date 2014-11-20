@@ -21,6 +21,8 @@ MainGame::MainGame()
     if (SDL_Init(SDL_INIT_VIDEO)) throw std::logic_error("Failed to initialize SDL!  " + std::string(SDL_GetError()));
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+    SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 8);
+    SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 2);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
     SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
     window = SDL_CreateWindow("Genetic Algorithm", 0, 0, 1280, 720, SDL_WINDOW_OPENGL);
