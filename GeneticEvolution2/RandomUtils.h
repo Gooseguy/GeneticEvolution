@@ -12,16 +12,30 @@
 class RandomUtils
 {
 public:
-    static RandomUtils Instance;
+    static std::mt19937 rand;
     template<typename T>
-    T Normal(T mean, T variance);
+    static T Normal(T mean, T variance)
+    {
+        std::normal_distribution<T> distribution(mean, variance);
+        return distribution(rand);
+    }
     template<typename T>
-    T Binomial(int mean, float variance); // This is the discrete analog of the normal distribution
+    static T Binomial(int mean, float variance) // This is the discrete analog of the normal distribution
+    {
+        std::binomial_distribution<T> distribution(mean, variance);
+        return distribution(rand);
+    }
     template<typename T>
-    T Uniform(T min, T max);
+    static T Uniform(T min, T max)
+    {
+        std::uniform_real_distribution<T> distribution(min, max);
+        return distribution(rand);
+    }
     
-    std::mt19937 rand;
-    float UniformFloat();
+    static float UniformFloat()
+    {
+        return Uniform<float>(0.0f,1.0f);
+    }
 private:
 };
 

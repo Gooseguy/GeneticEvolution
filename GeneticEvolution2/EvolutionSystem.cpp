@@ -18,7 +18,7 @@ currentFunction(1)
 {
     configurePerformanceFunctions();
     for (int i = 0; i<NUM_AGENTS;++i)
-        agents.push_back(new SoftBodyAgent(glm::vec3(0,0,0.01), glm::vec3(RandomUtils::Instance.UniformFloat(),RandomUtils::Instance.UniformFloat(),RandomUtils::Instance.UniformFloat())));
+        agents.push_back(new SoftBodyAgent(glm::vec3(0,0,0.01), glm::vec3(RandomUtils::UniformFloat(),RandomUtils::UniformFloat(),RandomUtils::UniformFloat())));
     selectedAgent=agents[0];
     generateBuffers();
     updateBuffers();
@@ -154,7 +154,7 @@ void EvolutionSystem::nextGeneration()
     std::vector<SoftBodyAgent*> newAgents(agents.size());
     for (int i = 0; i<agents.size();++i)
     {
-        newAgents[i] = new SoftBodyAgent(*agents[(int)distribution(RandomUtils::Instance.rand)]);
+        newAgents[i] = new SoftBodyAgent(*agents[(int)distribution(RandomUtils::rand)]);
     }
 
     for (auto& agent : agents) delete agent;

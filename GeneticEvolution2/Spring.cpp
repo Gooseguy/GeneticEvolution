@@ -13,7 +13,7 @@ Spring::Spring(std::size_t o1,std::size_t o2, std::vector<SoftBodyNode>& objects
 {
     
 }
-Spring::Spring(std::size_t o1,std::size_t o2, std::vector<SoftBodyNode>& objects, float equilibriumDist) : obj1(o1), obj2(o2), EquilibriumDist(equilibriumDist), SpringConstant(100), ExtensionAmount(RandomUtils::Instance.Normal<float>(0, 0.05f)*0.5f), ExtensionPeriod(50), ExtensionOffset(5*RandomUtils::Instance.UniformFloat()), ExtensionLength(RandomUtils::Instance.UniformFloat() * ExtensionPeriod)
+Spring::Spring(std::size_t o1,std::size_t o2, std::vector<SoftBodyNode>& objects, float equilibriumDist) : obj1(o1), obj2(o2), EquilibriumDist(equilibriumDist), SpringConstant(100), ExtensionAmount(RandomUtils::Normal<float>(0, 0.05f)*0.5f), ExtensionPeriod(50), ExtensionOffset(5*RandomUtils::UniformFloat()), ExtensionLength(RandomUtils::UniformFloat() * ExtensionPeriod)
 {
     
 }
