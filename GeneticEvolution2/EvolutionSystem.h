@@ -33,6 +33,7 @@ public:
     const float TIME_STEP;
     const int NUM_AGENTS;
     SoftBodyAgent* selectedAgent;
+    inline void ToggleAccelerated();
 private:
     GLuint vao,vbo;
     void generateBuffers();
@@ -46,4 +47,11 @@ private:
     void nextGeneration();
     void configurePerformanceFunctions();
     std::string outputFileLocation;
+    bool accelerate;
+    void updateAgent(SoftBodyAgent* agent);
 };
+
+void EvolutionSystem::ToggleAccelerated()
+{
+    accelerate=!accelerate;
+}

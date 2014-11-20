@@ -52,8 +52,7 @@ MainGame::MainGame()
 
 void MainGame::Update(EvolutionSystem& evolutionSystem)
 {
-    for (int i = 0; i<50;++i)
-        evolutionSystem.Update();
+    evolutionSystem.Update();
 }
 
 void MainGame::Draw(EvolutionSystem& evolutionSystem)
@@ -84,6 +83,9 @@ void MainGame::HandleEvents(EvolutionSystem& evolutionSystem)
                     if (evolutionSystem.CurrentRenderMode==EvolutionSystem::RenderMode::POINT)
                         evolutionSystem.CurrentRenderMode =EvolutionSystem::RenderMode::WIRE;
                     else evolutionSystem.CurrentRenderMode =EvolutionSystem::RenderMode::POINT;
+                    break;
+                case SDL_SCANCODE_SPACE:
+                    evolutionSystem.ToggleAccelerated();
                     break;
                 default:
                     break;

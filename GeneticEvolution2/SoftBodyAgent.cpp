@@ -125,16 +125,16 @@ void SoftBodyAgent::Mutate()
 //        if (pos.z < 0.01) pos.z = 0.01;
 ////
 //    }
-    for (int i = 0; i<nodes.size();++i)
-    {
-        if (RandomUtils::UniformFloat() < 0.001)
-            RemoveNode(i);
-    }
+//    for (int i = 0; i<nodes.size();++i)
+//    {
+//        if (RandomUtils::UniformFloat() < 0.001)
+//            RemoveNode(i);
+//    }
     
     for (Spring& spring : springs)
     {
         spring.ExtensionAmount+=RandomUtils::Normal<float>(0, extensionAmountVariance);
-        float extensionAmountMax=spring.EquilibriumDist*5;
+        float extensionAmountMax=spring.EquilibriumDist*2;
         if (spring.ExtensionAmount>extensionAmountMax)spring.ExtensionAmount=extensionAmountMax;
         else if (spring.ExtensionAmount<-extensionAmountMax)spring.ExtensionAmount=-extensionAmountMax;
 //        spring.EquilibriumDist+=RandomUtils::Instance.Normal<float>(0, 0.1);
@@ -143,8 +143,11 @@ void SoftBodyAgent::Mutate()
         spring.ExtensionLength%=spring.ExtensionPeriod;
         spring.ExtensionOffset%=spring.ExtensionPeriod;
         color.x+=RandomUtils::Normal<float>(0.f, 0.05f);
+        color.x = std::abs(color.x);
         color.y+=RandomUtils::Normal<float>(0.f, 0.05f);
+        color.x = std::abs(color.y);
         color.z+=RandomUtils::Normal<float>(0.f, 0.05f);
+        color.x = std::abs(color.z);
         color = glm::normalize(color);
 //        spring.ExtensionPeriod+=RandomUtils::Instance.Normal<float>(0, extensionPeriodVariance);
 //        if (spring.ExtensionPeriod<1)spring.ExtensionPeriod=1;

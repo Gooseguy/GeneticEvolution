@@ -17,7 +17,7 @@ public:
     SoftBodyAgent(glm::vec3 pos, glm::vec3 color);
     SoftBodyAgent(const SoftBodyAgent& agent);
     ~SoftBodyAgent();
-    static const int INITIAL_CUBE_WIDTH = 3;
+    static const int INITIAL_CUBE_WIDTH = 2;
     static const float NODE_SPACING;
     void Update(float timeStep, int currentTime);
     std::vector<SoftBodyNode> nodes;

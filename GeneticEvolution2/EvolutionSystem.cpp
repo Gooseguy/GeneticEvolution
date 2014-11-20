@@ -9,12 +9,14 @@
 #include "EvolutionSystem.h"
 #include "RandomUtils.h"
 #include <fstream>
-EvolutionSystem::EvolutionSystem(std::string _outputFileLocation) : NUM_AGENTS(10),
+#include <thread>
+EvolutionSystem::EvolutionSystem(std::string _outputFileLocation) : NUM_AGENTS(100),
 TIME_STEP(0.0005),
 CurrentRenderMode(RenderMode::POINT),
 generationLength(8./TIME_STEP),
 outputFileLocation(_outputFileLocation),
-currentFunction(1)
+currentFunction(0),
+accelerate(false)
 {
     configurePerformanceFunctions();
     for (int i = 0; i<NUM_AGENTS;++i)
@@ -102,15 +104,17 @@ void EvolutionSystem::Draw()
     
 }
 
-void EvolutionSystem::Update()
+
+void EvolutionSystem::updateAgent(SoftBodyAgent *agent)
 {
-    //apply external forces
-    for (auto& agent : agents)
+    int rep = accelerate ? generationLength : 1;
+    for (int i =0;i<rep;++i)
     {
+        //apply external forces
         for (auto& node : agent->nodes)
         {
-//            node.ApplyForce(glm::vec3(0,0,-1));
-//            if (node->Position.x > 0.25) node->ApplyForce(glm::vec3(0,1,0));
+            //            node.ApplyForce(glm::vec3(0,0,-1));
+            //            if (node->Position.x > 0.25) node->ApplyForce(glm::vec3(0,1,0));
             node.ApplyForce(glm::vec3(0,0,-1));
             if (node.Position.z < 0)
             {
@@ -118,15 +122,38 @@ void EvolutionSystem::Update()
                 const float k_friction = 0.9;
                 node.ApplyForce(glm::vec3(0,0,normalForce));
                 if (node.Velocity.x!=0 && node.Velocity.y!=0)
-                node.ApplyForce(-normalForce * k_friction * glm::normalize(glm::vec3(node.Velocity.x,node.Velocity.y,0)));
+                    node.ApplyForce(-normalForce * k_friction * glm::normalize(glm::vec3(node.Velocity.x,node.Velocity.y,0)));
             }
         }
-    }
-//    selectedAgent->nodes[0]->ApplyForce(glm::vec3(20,0,0));
-    for (auto& agent : agents)
+        //    selectedAgent->nodes[0]->ApplyForce(glm::vec3(20,0,0));
         agent->Update(TIME_STEP, currentTime*TIME_STEP*100);
-    currentTime++;
-    if (currentTime%generationLength==0) nextGeneration();
+    }
+}
+
+void EvolutionSystem::Update()
+{
+    if (!accelerate)
+    {
+        for (int i = 0; i<(accelerate ? 1 : 50); ++i)
+        {
+            for (auto& agent : agents)
+                updateAgent(agent);
+            currentTime++;
+            
+            if (currentTime%generationLength==0) nextGeneration();
+        }
+    }
+    else
+    {
+        std::vector<std::thread> threads;
+        threads.reserve(agents.size());
+        for (SoftBodyAgent* agent : agents) threads.push_back(std::thread(&EvolutionSystem::updateAgent, this, agent));
+        
+        currentTime+=generationLength;
+        for (auto& thread : threads) thread.join();
+        nextGeneration();
+        
+    }
 }
 
 void EvolutionSystem::nextGeneration()
