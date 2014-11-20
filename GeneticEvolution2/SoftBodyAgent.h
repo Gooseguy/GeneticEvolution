@@ -28,10 +28,13 @@ public:
     float TotalMinimumHeight;
     float TotalDistance;
     glm::vec3 color;
+    float Size;
+    glm::vec3 StartingPos;
 private:
     inline int initialNodeIndex(int x, int y, int z);
     void addSpring(std::size_t node1, std::size_t node2);
     inline void addSpringDisplacement(int x, int y, int z);
+    void getSize();
 };
 
 int SoftBodyAgent::initialNodeIndex(int x, int y, int z)

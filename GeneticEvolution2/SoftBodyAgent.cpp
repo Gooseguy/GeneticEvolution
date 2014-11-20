@@ -50,6 +50,7 @@ SoftBodyAgent::SoftBodyAgent(glm::vec3 pos, glm::vec3 _color) : TotalMinimumHeig
     addSpringDisplacement(-1, 1, -1);
     addSpringDisplacement(1, -1, -1);
     addSpringDisplacement(-1, -1, -1);
+    getSize();
     
 }
 
@@ -65,6 +66,7 @@ color(agent.color)
     for (auto& spring : agent.springs)
         springs.push_back(Spring(spring, nodes));
     Mutate();
+    getSize();
     
 }
 
@@ -73,6 +75,20 @@ SoftBodyAgent::~SoftBodyAgent()
 {
 //    for (auto& node : nodes) { delete node; node=nullptr; }
 //    std::cout << "Destructed." << std::endl;
+}
+
+void SoftBodyAgent::getSize()
+{
+    StartingPos=glm::vec3();
+    for (auto& node : nodes)
+        StartingPos+=node.Position;
+    StartingPos/=nodes.size();
+    Size=0;
+    for (auto& node:nodes)
+    {
+        float dist = glm::length(node.Position-StartingPos);
+        if (dist >Size)Size = dist;
+    }
 }
 
 void SoftBodyAgent::Update(float timeStep, int currentTime)
@@ -91,8 +107,9 @@ void SoftBodyAgent::Update(float timeStep, int currentTime)
         averageDisp+=node.Position;
     }
     averageDisp.z=0;
+    averageDisp/=nodes.size();
     TotalMinimumHeight+=lowestNode->Position.z;
-    TotalDistance+=glm::length(averageDisp)/nodes.size();//lowestNode->Position.z;
+    TotalDistance+=glm::length(averageDisp-StartingPos);//lowestNode->Position.z;
 }
 
 void SoftBodyAgent::addSpring(std::size_t node1, std::size_t node2)

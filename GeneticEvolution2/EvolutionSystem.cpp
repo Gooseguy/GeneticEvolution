@@ -172,7 +172,7 @@ void EvolutionSystem::updateAgent(SoftBodyAgent *agent)
             if (node.Position.z < 0)
             {
                 float normalForce =-node.Position.z*10000 - node.NetForce.z;
-                const float k_friction = 0.1;
+                const float k_friction = 0.9;
                 node.ApplyForce(glm::vec3(0,0,normalForce));
                 if (node.Velocity.x!=0 && node.Velocity.y!=0)
                     node.ApplyForce(-normalForce * k_friction * glm::normalize(glm::vec3(node.Velocity.x,node.Velocity.y,0)));
@@ -245,8 +245,8 @@ void EvolutionSystem::nextGeneration()
 void EvolutionSystem::configurePerformanceFunctions()
 {
     performanceFunctions.push_back(std::function<float(SoftBodyAgent&)>([this](SoftBodyAgent& agent) {
-        return pow(0.1f + agent.TotalDistance / generationLength,2);
+        return pow(0.1f + agent.TotalDistance / generationLength / agent.Size,2);
     }));performanceFunctions.push_back(std::function<float(SoftBodyAgent&)>([this](SoftBodyAgent& agent) {
-        return pow(0.1f + agent.TotalMinimumHeight / generationLength,2);
+        return pow(0.1f + agent.TotalMinimumHeight / generationLength / agent.Size,2);
     }));
 }
