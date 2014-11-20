@@ -40,6 +40,8 @@ void EvolutionSystem::generateBuffers()
     glBindVertexArray(vao);
     glGenBuffers(1, &vbo);
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glGenBuffers(1, &ibo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)__offsetof(Vertex, position));
@@ -50,7 +52,16 @@ void EvolutionSystem::generateBuffers()
 void EvolutionSystem::updateBuffers()
 {
     vertices.clear();
-    for (auto& vertex : g_quad_vertex_buffer_data) vertices.push_back(vertex);
+    indices.clear();
+    {
+        int currentIndex = 0;
+        for (auto& vertex : g_quad_vertex_buffer_data)
+        {
+            vertices.push_back(vertex);
+            indices.push_back(currentIndex);
+            currentIndex++;
+        }
+    }
     
     //regenerate vertices based on selected agent
 //    if (selectedAgent!=nullptr)
@@ -61,30 +72,51 @@ void EvolutionSystem::updateBuffers()
         case RenderMode::POINT_ALL:
             for (auto& agent : agents)
                 for (auto& node : agent->nodes)
+                {
+                    unsigned int currentIndex = vertices.size();
                     vertices.push_back(Vertex(node.Position,agent->color));
+                    indices.push_back(currentIndex);
+                }
             break;
         case RenderMode::WIRE_ALL:
             for (auto& agent : agents)
+            {
+                unsigned int currentIndex = vertices.size();
+                for (auto& node : agent->nodes)
+                {
+                    vertices.push_back(Vertex(node.Position, agent->color));
+                }
                 for (auto& spring : agent->springs)
                 {
-                    vertices.push_back(Vertex(agent->nodes[spring.obj1].Position,agent->color));
-                    vertices.push_back(Vertex(agent->nodes[spring.obj2].Position,agent->color));
+                    indices.push_back(currentIndex + spring.obj1);
+                    indices.push_back(currentIndex + spring.obj2);
                 }
+            }
             break;
         case RenderMode::POINT_ONE:
             for (auto& node : agents[selectedAgent]->nodes)
+            {
+                unsigned int currentIndex = vertices.size();
                 vertices.push_back(Vertex(node.Position,agents[selectedAgent]->color));
+                indices.push_back(currentIndex);
+            }
             break;
         case RenderMode::WIRE_ONE:
+            unsigned int currentIndex = vertices.size();
+            for (auto& node : agents[selectedAgent]->nodes)
+            {
+                vertices.push_back(Vertex(node.Position, agents[selectedAgent]->color));
+            }
             for (auto& spring : agents[selectedAgent]->springs)
             {
-                vertices.push_back(Vertex(agents[selectedAgent]->nodes[spring.obj1].Position,agents[selectedAgent]->color));
-                vertices.push_back(Vertex(agents[selectedAgent]->nodes[spring.obj2].Position,agents[selectedAgent]->color));
+                indices.push_back(spring.obj1 + currentIndex);
+                indices.push_back(spring.obj2 + currentIndex);
             }
             break;
     }
     glBindVertexArray(vao);
     glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vertices.size(), &vertices[0], GL_DYNAMIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * indices.size(), &indices[0], GL_DYNAMIC_DRAW);
     glBindVertexArray(0);
 }
 
@@ -107,7 +139,7 @@ void EvolutionSystem::Draw()
                 polyType=GL_LINES;
                 break;
         }
-        glDrawArrays(polyType, 0, vertices.size());
+        glDrawElements(polyType, indices.size(), GL_UNSIGNED_INT, (void*)0);
     }
     
     glBindVertexArray(0);

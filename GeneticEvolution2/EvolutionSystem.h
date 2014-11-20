@@ -40,10 +40,11 @@ public:
     inline void PrevSelectedAgent();
     inline void ToggleAccelerated();
 private:
-    GLuint vao,vbo;
+    GLuint vao,vbo,ibo;
     void generateBuffers();
     void updateBuffers();
     std::vector<Vertex> vertices;
+    std::vector<unsigned int> indices;
     std::vector<SoftBodyAgent*> agents;
     std::vector<std::function<float(SoftBodyAgent&)>> performanceFunctions;
     std::size_t currentFunction;
