@@ -14,6 +14,7 @@ class Spring
 public:
     Spring (std::size_t index1, std::size_t index2, std::vector<SoftBodyNode>& objects);
     Spring (std::size_t o1,std::size_t o2, std::vector<SoftBodyNode>& objects, float equilibriumDist);
+    Spring (const Spring& spring, std::vector<SoftBodyNode>& objects);
     std::size_t obj1;
     std::size_t obj2;
     void ApplyForces(int currentTime, std::vector<SoftBodyNode>& objects);

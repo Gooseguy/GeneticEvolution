@@ -17,9 +17,12 @@ class EvolutionSystem
 public:
     enum class RenderMode
     {
-        POINT,
-        WIRE,
+        POINT_ALL,
+        WIRE_ALL,
+        POINT_ONE,
+        WIRE_ONE,
     } CurrentRenderMode;
+    inline void NextRenderMode();
     struct Vertex
     {
         glm::vec3 position;
@@ -32,7 +35,9 @@ public:
     void Update();
     const float TIME_STEP;
     const int NUM_AGENTS;
-    SoftBodyAgent* selectedAgent;
+    int selectedAgent;
+    inline void NextSelectedAgent();
+    inline void PrevSelectedAgent();
     inline void ToggleAccelerated();
 private:
     GLuint vao,vbo;
@@ -54,4 +59,35 @@ private:
 void EvolutionSystem::ToggleAccelerated()
 {
     accelerate=!accelerate;
+}
+
+void EvolutionSystem::NextRenderMode()
+{
+    switch (CurrentRenderMode)
+    {
+        case RenderMode::POINT_ALL:
+            CurrentRenderMode=RenderMode::WIRE_ALL;
+            break;
+        case RenderMode::WIRE_ALL:
+            CurrentRenderMode=RenderMode::POINT_ONE;
+            break;
+        case RenderMode::POINT_ONE:
+            CurrentRenderMode=RenderMode::WIRE_ONE;
+            break;
+        case RenderMode::WIRE_ONE:
+            CurrentRenderMode=RenderMode::POINT_ALL;
+            break;
+    }
+}
+
+void EvolutionSystem::NextSelectedAgent()
+{
+    selectedAgent++;
+    if (selectedAgent>=NUM_AGENTS) selectedAgent=0;
+}
+
+void EvolutionSystem::PrevSelectedAgent()
+{
+    selectedAgent--;
+    if (selectedAgent<0) selectedAgent=NUM_AGENTS-1;
 }

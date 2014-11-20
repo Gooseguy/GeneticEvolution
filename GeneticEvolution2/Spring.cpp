@@ -17,6 +17,11 @@ Spring::Spring(std::size_t o1,std::size_t o2, std::vector<SoftBodyNode>& objects
 {
     
 }
+
+Spring::Spring(const Spring& spring, std::vector<SoftBodyNode>& objects) : Spring(spring)                                                                                                          {
+    EquilibriumDist = glm::length(objects[spring.obj1].Position-objects[spring.obj2].Position);
+
+}
 void Spring::ApplyForces(int currentTime, std::vector<SoftBodyNode>& objects)
 {
     PhysicsObject* o1 = &objects[obj1];

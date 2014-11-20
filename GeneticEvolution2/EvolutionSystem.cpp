@@ -12,16 +12,16 @@
 #include <thread>
 EvolutionSystem::EvolutionSystem(std::string _outputFileLocation) : NUM_AGENTS(100),
 TIME_STEP(0.0005),
-CurrentRenderMode(RenderMode::POINT),
+CurrentRenderMode(RenderMode::POINT_ALL),
 generationLength(8./TIME_STEP),
 outputFileLocation(_outputFileLocation),
 currentFunction(0),
-accelerate(false)
+accelerate(false),
+selectedAgent(0)
 {
     configurePerformanceFunctions();
     for (int i = 0; i<NUM_AGENTS;++i)
         agents.push_back(new SoftBodyAgent(glm::vec3(0,0,0.01), glm::vec3(RandomUtils::UniformFloat(),RandomUtils::UniformFloat(),RandomUtils::UniformFloat())));
-    selectedAgent=agents[0];
     generateBuffers();
     updateBuffers();
 }
@@ -56,24 +56,32 @@ void EvolutionSystem::updateBuffers()
 //    if (selectedAgent!=nullptr)
 //    {
     //        auto agent = selectedAgent;
-    for (auto& agent : agents)
+    switch (CurrentRenderMode)
     {
-        switch (CurrentRenderMode)
-        {
-            case RenderMode::POINT:
-                for (auto& node : selectedAgent->nodes)
-                {
+        case RenderMode::POINT_ALL:
+            for (auto& agent : agents)
+                for (auto& node : agent->nodes)
                     vertices.push_back(Vertex(node.Position,agent->color));
-                }
-                break;
-            case RenderMode::WIRE:
-                for (auto& spring : selectedAgent->springs)
+            break;
+        case RenderMode::WIRE_ALL:
+            for (auto& agent : agents)
+                for (auto& spring : agent->springs)
                 {
                     vertices.push_back(Vertex(agent->nodes[spring.obj1].Position,agent->color));
                     vertices.push_back(Vertex(agent->nodes[spring.obj2].Position,agent->color));
                 }
-                break;
-        }
+            break;
+        case RenderMode::POINT_ONE:
+            for (auto& node : agents[selectedAgent]->nodes)
+                vertices.push_back(Vertex(node.Position,agents[selectedAgent]->color));
+            break;
+        case RenderMode::WIRE_ONE:
+            for (auto& spring : agents[selectedAgent]->springs)
+            {
+                vertices.push_back(Vertex(agents[selectedAgent]->nodes[spring.obj1].Position,agents[selectedAgent]->color));
+                vertices.push_back(Vertex(agents[selectedAgent]->nodes[spring.obj2].Position,agents[selectedAgent]->color));
+            }
+            break;
     }
     glBindVertexArray(vao);
     glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vertices.size(), &vertices[0], GL_DYNAMIC_DRAW);
@@ -90,10 +98,12 @@ void EvolutionSystem::Draw()
         GLenum polyType;
         switch (CurrentRenderMode)
         {
-            case RenderMode::POINT:
+            case RenderMode::POINT_ONE:
+            case RenderMode::POINT_ALL:
                 polyType=GL_POINTS;
                 break;
-            case RenderMode::WIRE:
+            case RenderMode::WIRE_ONE:
+            case RenderMode::WIRE_ALL:
                 polyType=GL_LINES;
                 break;
         }
@@ -186,14 +196,13 @@ void EvolutionSystem::nextGeneration()
 
     for (auto& agent : agents) delete agent;
     agents = newAgents;
-    selectedAgent=agents[0];
 }
 
 void EvolutionSystem::configurePerformanceFunctions()
 {
     performanceFunctions.push_back(std::function<float(SoftBodyAgent&)>([this](SoftBodyAgent& agent) {
-        return 0.1f + agent.TotalDistance / generationLength;
+        return pow(0.1f + agent.TotalDistance / generationLength, 0.5);
     }));performanceFunctions.push_back(std::function<float(SoftBodyAgent&)>([this](SoftBodyAgent& agent) {
-        return 0.1f + agent.TotalMinimumHeight / generationLength;
+        return pow(0.1f + agent.TotalMinimumHeight / generationLength,0.5);
     }));
 }

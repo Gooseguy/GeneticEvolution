@@ -80,12 +80,16 @@ void MainGame::HandleEvents(EvolutionSystem& evolutionSystem)
                     GameState=GameState::EXIT;
                     break;
                 case SDL_SCANCODE_TAB:
-                    if (evolutionSystem.CurrentRenderMode==EvolutionSystem::RenderMode::POINT)
-                        evolutionSystem.CurrentRenderMode =EvolutionSystem::RenderMode::WIRE;
-                    else evolutionSystem.CurrentRenderMode =EvolutionSystem::RenderMode::POINT;
+                    evolutionSystem.NextRenderMode();
                     break;
                 case SDL_SCANCODE_SPACE:
                     evolutionSystem.ToggleAccelerated();
+                    break;
+                case SDL_SCANCODE_UP:
+                    evolutionSystem.NextSelectedAgent();
+                    break;
+                case SDL_SCANCODE_DOWN:
+                    evolutionSystem.PrevSelectedAgent();
                     break;
                 default:
                     break;
