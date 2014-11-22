@@ -23,6 +23,8 @@
 		AA2BEFAA1A196585006186EB /* glm in Resources */ = {isa = PBXBuildFile; fileRef = AA2BEFA71A196585006186EB /* glm */; };
 		AA2BEFAB1A196585006186EB /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA2BEFA91A196585006186EB /* main.cpp */; };
 		AA2BEFAE1A1965C9006186EB /* ResourcePath.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA2BEFAD1A1965C9006186EB /* ResourcePath.mm */; };
+		CA64B88B1A1FAFA100649368 /* Wall.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA64B8891A1FAFA100649368 /* Wall.cpp */; };
+		CA64B88E1A1FF68100649368 /* Vertex.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA64B88C1A1FF68100649368 /* Vertex.cpp */; };
 		CA9CFCAA1A1A568C00687979 /* RandomUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA9CFCA81A1A568C00687979 /* RandomUtils.cpp */; };
 /* End PBXBuildFile section */
 
@@ -55,6 +57,10 @@
 		AA2BEFA91A196585006186EB /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		AA2BEFAC1A1965C9006186EB /* ResourcePath.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ResourcePath.hpp; sourceTree = "<group>"; };
 		AA2BEFAD1A1965C9006186EB /* ResourcePath.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ResourcePath.mm; sourceTree = "<group>"; };
+		CA64B8891A1FAFA100649368 /* Wall.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Wall.cpp; sourceTree = "<group>"; };
+		CA64B88A1A1FAFA100649368 /* Wall.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Wall.h; sourceTree = "<group>"; };
+		CA64B88C1A1FF68100649368 /* Vertex.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Vertex.cpp; sourceTree = "<group>"; };
+		CA64B88D1A1FF68100649368 /* Vertex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Vertex.h; sourceTree = "<group>"; };
 		CA9CFCA81A1A568C00687979 /* RandomUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RandomUtils.cpp; sourceTree = "<group>"; };
 		CA9CFCA91A1A568C00687979 /* RandomUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RandomUtils.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -127,6 +133,10 @@
 				AA2BEF531A196224006186EB /* Supporting Files */,
 				CA9CFCA81A1A568C00687979 /* RandomUtils.cpp */,
 				CA9CFCA91A1A568C00687979 /* RandomUtils.h */,
+				CA64B8891A1FAFA100649368 /* Wall.cpp */,
+				CA64B88A1A1FAFA100649368 /* Wall.h */,
+				CA64B88C1A1FF68100649368 /* Vertex.cpp */,
+				CA64B88D1A1FF68100649368 /* Vertex.h */,
 			);
 			path = GeneticEvolution2;
 			sourceTree = "<group>";
@@ -227,8 +237,10 @@
 				AA2BEFA21A19657C006186EB /* Camera.cpp in Sources */,
 				AA2BEFA51A19657C006186EB /* PhysicsObject.cpp in Sources */,
 				AA2BEFA31A19657C006186EB /* SoftBodyNode.cpp in Sources */,
+				CA64B88B1A1FAFA100649368 /* Wall.cpp in Sources */,
 				AA2BEFA11A19657C006186EB /* Spring.cpp in Sources */,
 				AA2BEF9E1A19657C006186EB /* EvolutionSystem.cpp in Sources */,
+				CA64B88E1A1FF68100649368 /* Vertex.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -324,6 +336,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)",
 				);
+				GCC_OPTIMIZATION_LEVEL = fast;
 				INFOPLIST_FILE = "GeneticEvolution2/GeneticEvolution-Info.plist";
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				OTHER_LDFLAGS = "";

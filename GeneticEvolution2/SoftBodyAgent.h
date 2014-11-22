@@ -11,6 +11,7 @@
 #include "glm/glm.hpp"
 #include "SoftBodyNode.h"
 #include "Spring.h"
+#include "glm/gtx/norm.hpp"
 class SoftBodyAgent
 {
 public:
@@ -30,12 +31,21 @@ public:
     glm::vec3 color;
     float Size;
     glm::vec3 StartingPos;
+    inline glm::vec3 GetNodeColor(SoftBodyNode& node);
 private:
+    void mutateGeometry();
     inline int initialNodeIndex(int x, int y, int z);
     void addSpring(std::size_t node1, std::size_t node2);
     inline void addSpringDisplacement(int x, int y, int z);
     void getSize();
 };
+
+glm::vec3 SoftBodyAgent::GetNodeColor(SoftBodyNode& node)
+{
+    float mult = node.TotalStress;
+    node.TotalStress=0;
+    return color+mult*0.00001f;
+}
 
 int SoftBodyAgent::initialNodeIndex(int x, int y, int z)
 {

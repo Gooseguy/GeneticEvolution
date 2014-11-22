@@ -40,7 +40,8 @@ void GLManager::initGL()
 {
 //    glDisable(GL_CULL_FACE);
     glDisable(GL_CULL_FACE);
-    glDisable(GL_DEPTH_TEST);
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LEQUAL);
     glPointSize(5);
     glEnable(GL_MULTISAMPLE);
     

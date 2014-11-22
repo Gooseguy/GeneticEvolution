@@ -60,7 +60,7 @@ void MainGame::Update(EvolutionSystem& evolutionSystem)
 void MainGame::Draw(EvolutionSystem& evolutionSystem)
 {
     glClearColor(0,0,0,1);
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
     evolutionSystem.Draw();
 }
@@ -92,6 +92,12 @@ void MainGame::HandleEvents(EvolutionSystem& evolutionSystem)
                     break;
                 case SDL_SCANCODE_DOWN:
                     evolutionSystem.PrevSelectedAgent();
+                    break;
+                case SDL_SCANCODE_T:
+                    evolutionSystem.IncreasePlaybackRate();
+                    break;
+                case SDL_SCANCODE_G:
+                    evolutionSystem.DecreasePlaybackRate();
                     break;
                 default:
                     break;

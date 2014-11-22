@@ -10,22 +10,25 @@
 #include "RandomUtils.h"
 #include <fstream>
 #include <thread>
-
+#include "glm/gtx/rotate_vector.hpp"
 #include <iostream>
+#include <chrono>
 EvolutionSystem::EvolutionSystem(std::string _outputFileLocation) : NUM_AGENTS(50),
-gridSquareLength(0.05),
 TIME_STEP(0.0005),
 CurrentRenderMode(RenderMode::POINT_ALL),
-generationLength(8./TIME_STEP),
+generationLength(15./TIME_STEP),
 outputFileLocation(_outputFileLocation),
 currentFunction(0),
 accelerate(false),
-selectedAgent(0)
+selectedAgent(0),
+GRAVITATIONAL_ACCELERATION(-3.f),
+playbackRate(50),
+walls{Wall(glm::vec3(0,-0.5f,-0.7),glm::rotate(glm::vec3(0,0,1), 20.0f, glm::vec3(1,0,0)),1.9f)}
+//Wall(glm::vec3(0,0.5f,-0.3),glm::rotate(glm::vec3(0,0,1), -10.0f, glm::vec3(1,0,0)),0.9f)}
 {
     configurePerformanceFunctions();
     for (int i = 0; i<NUM_AGENTS;++i)
         agents.push_back(new SoftBodyAgent(glm::vec3(0,0,0.01), glm::vec3(RandomUtils::UniformFloat(),RandomUtils::UniformFloat(),RandomUtils::UniformFloat())));
-    constructBaseGrid();
     generateBuffers();
     updateBuffers();
 }
@@ -46,33 +49,12 @@ void EvolutionSystem::generateBuffers()
     glBindVertexArray(0);
 }
 
-void EvolutionSystem::constructBaseGrid()
-{
-    for (float i = -1; i<=1+gridSquareLength;i+=gridSquareLength)
-    {
-        baseGrid.push_back(Vertex(-1,i,0,1.f,0,0));
-        baseGrid.push_back(Vertex(1,i,0,1.f,0,0));
-    }
-    for (float i = -1; i<=1+gridSquareLength;i+=gridSquareLength)
-    {
-        baseGrid.push_back(Vertex(i,-1,0,1.f,0,0));
-        baseGrid.push_back(Vertex(i,1,0,1.f,0,0));
-    }
-}
 
 void EvolutionSystem::updateBuffers()
 {
     vertices.clear();
     indices.clear();
-    {
-        int currentIndex = 0;
-        for (auto& vertex : baseGrid)
-        {
-            vertices.push_back(vertex);
-            indices.push_back(currentIndex);
-            currentIndex++;
-        }
-    }
+    for (auto& wall:walls) wall.AppendVertices(vertices, indices);
     
     //regenerate vertices based on selected agent
 //    if (selectedAgent!=nullptr)
@@ -85,7 +67,7 @@ void EvolutionSystem::updateBuffers()
                 for (auto& node : agent->nodes)
                 {
                     unsigned int currentIndex = vertices.size();
-                    vertices.push_back(Vertex(node.Position,agent->color));
+                    vertices.push_back(Vertex(node.Position,agent->GetNodeColor(node)));
                     indices.push_back(currentIndex);
                 }
             break;
@@ -95,7 +77,7 @@ void EvolutionSystem::updateBuffers()
                 unsigned int currentIndex = vertices.size();
                 for (auto& node : agent->nodes)
                 {
-                    vertices.push_back(Vertex(node.Position, agent->color));
+                    vertices.push_back(Vertex(node.Position, agent->GetNodeColor(node)));
                 }
                 for (auto& spring : agent->springs)
                 {
@@ -108,7 +90,7 @@ void EvolutionSystem::updateBuffers()
             for (auto& node : agents[selectedAgent]->nodes)
             {
                 unsigned int currentIndex = vertices.size();
-                vertices.push_back(Vertex(node.Position,agents[selectedAgent]->color));
+                vertices.push_back(Vertex(node.Position,agents[selectedAgent]->GetNodeColor(node)));
                 indices.push_back(currentIndex);
             }
             break;
@@ -116,7 +98,7 @@ void EvolutionSystem::updateBuffers()
             unsigned int currentIndex = vertices.size();
             for (auto& node : agents[selectedAgent]->nodes)
             {
-                vertices.push_back(Vertex(node.Position, agents[selectedAgent]->color));
+                vertices.push_back(Vertex(node.Position, agents[selectedAgent]->GetNodeColor(node)));
             }
             for (auto& spring : agents[selectedAgent]->springs)
             {
@@ -168,26 +150,28 @@ void EvolutionSystem::updateAgent(SoftBodyAgent *agent)
         {
             //            node.ApplyForce(glm::vec3(0,0,-1));
             //            if (node->Position.x > 0.25) node->ApplyForce(glm::vec3(0,1,0));
-            node.ApplyForce(glm::vec3(0,0,-1));
-            if (node.Position.z < 0)
-            {
-                float normalForce =-node.Position.z*10000 - node.NetForce.z;
-                const float k_friction = 0.9;
-                node.ApplyForce(glm::vec3(0,0,normalForce));
-                if (node.Velocity.x!=0 && node.Velocity.y!=0)
-                    node.ApplyForce(-normalForce * k_friction * glm::normalize(glm::vec3(node.Velocity.x,node.Velocity.y,0)));
-            }
+            node.ApplyForce(glm::vec3(0,0,GRAVITATIONAL_ACCELERATION*node.Mass));
+            if (node.Velocity!=glm::vec3())
+                node.ApplyForce(-DRAG_COEFFICIENT*glm::normalize(node.Velocity));
+//            if (node.Position.z < 0)
+//            {
+//                float normalForce =-node.Position.z*10000 - node.NetForce.z;
+//                const float k_friction = 0.9;
+//                node.ApplyForce(glm::vec3(0,0,normalForce));
+//                if (node.Velocity.x!=0 && node.Velocity.y!=0)
+//                    node.ApplyForce(-normalForce * k_friction * glm::normalize(glm::vec3(node.Velocity.x,node.Velocity.y,0)));
+//            }
+            for (Wall& wall : walls) wall.ApplyForce(dynamic_cast<PhysicsObject*>(&node));
         }
         //    selectedAgent->nodes[0]->ApplyForce(glm::vec3(20,0,0));
         agent->Update(TIME_STEP, currentTime*TIME_STEP*100);
     }
 }
-
 void EvolutionSystem::Update()
 {
     if (!accelerate)
     {
-        for (int i = 0; i<(accelerate ? 1 : 50); ++i)
+        for (int i = 0; i<(accelerate ? 1 : playbackRate); ++i)
         {
             for (auto& agent : agents)
                 updateAgent(agent);
@@ -198,13 +182,17 @@ void EvolutionSystem::Update()
     }
     else
     {
+//        auto t = std::chrono::high_resolution_clock::now();
         std::vector<std::thread> threads;
         threads.reserve(agents.size());
         for (SoftBodyAgent* agent : agents) threads.push_back(std::thread(&EvolutionSystem::updateAgent, this, agent));
         
         currentTime+=generationLength;
         for (auto& thread : threads) thread.join();
+        
+//        std::cout << "Time passed: " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - t).count() << " ms" << std::endl;
         nextGeneration();
+        
         
     }
 }
@@ -228,7 +216,7 @@ void EvolutionSystem::nextGeneration()
 //    for (auto& p :probabilities) p/=average;
     average/=probabilities.size();
     stream << currentTime/generationLength << "," << average << std::endl;
-    for (float i : probabilities) std::cout << i << std::endl;
+    std::cout << currentTime/generationLength << "," << average << ","<<std::endl;
     std::piecewise_constant_distribution<float> distribution(intervals.begin(), intervals.end(), probabilities.begin());
     std::vector<SoftBodyAgent*> newAgents(agents.size());
     for (int i = 0; i<agents.size();++i)
@@ -245,8 +233,8 @@ void EvolutionSystem::nextGeneration()
 void EvolutionSystem::configurePerformanceFunctions()
 {
     performanceFunctions.push_back(std::function<float(SoftBodyAgent&)>([this](SoftBodyAgent& agent) {
-        return pow(0.1f + agent.TotalDistance / generationLength / agent.Size,2);
+        return pow(agent.TotalDistance / generationLength,2)/(agent.Size+0.001)*generationLength;
     }));performanceFunctions.push_back(std::function<float(SoftBodyAgent&)>([this](SoftBodyAgent& agent) {
-        return pow(0.1f + agent.TotalMinimumHeight / generationLength / agent.Size,2);
+        return (agent.TotalMinimumHeight / generationLength)/(agent.Size*generationLength+0.001);
     }));
 }

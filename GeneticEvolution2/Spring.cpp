@@ -13,7 +13,7 @@ Spring::Spring(std::size_t o1,std::size_t o2, std::vector<SoftBodyNode>& objects
 {
     
 }
-Spring::Spring(std::size_t o1,std::size_t o2, std::vector<SoftBodyNode>& objects, float equilibriumDist) : obj1(o1), obj2(o2), EquilibriumDist(equilibriumDist), SpringConstant(100), ExtensionAmount(RandomUtils::Normal<float>(0, 0.05f)*0.5f), ExtensionPeriod(50), ExtensionOffset(5*RandomUtils::UniformFloat()), ExtensionLength(RandomUtils::UniformFloat() * ExtensionPeriod)
+Spring::Spring(std::size_t o1,std::size_t o2, std::vector<SoftBodyNode>& objects, float equilibriumDist) : obj1(o1), obj2(o2), EquilibriumDist(equilibriumDist), SpringConstant(300), ExtensionAmount(RandomUtils::Normal<float>(0, 0.0005f)*0.5f), ExtensionPeriod(50), ExtensionOffset(5*RandomUtils::UniformFloat()), ExtensionLength(RandomUtils::UniformFloat() * ExtensionPeriod)
 {
     
 }
@@ -24,8 +24,8 @@ Spring::Spring(const Spring& spring, std::vector<SoftBodyNode>& objects) : Sprin
 }
 void Spring::ApplyForces(int currentTime, std::vector<SoftBodyNode>& objects)
 {
-    PhysicsObject* o1 = &objects[obj1];
-    PhysicsObject* o2 = &objects[obj2];
+    SoftBodyNode* o1 = &objects[obj1];
+    SoftBodyNode* o2 = &objects[obj2];
     glm::vec3 disp = o1->Position - o2->Position;
     glm::vec3 disp2 = o1->Position + o1->Velocity - o2->Position - o2->Velocity;
     float dist = glm::length(disp);
@@ -39,7 +39,9 @@ void Spring::ApplyForces(int currentTime, std::vector<SoftBodyNode>& objects)
     if (dist < 50 && dist>0.01 && dist2 < 50 && dist2 > 0.01)
     {
         o1->ApplyForce(-(diff* SpringConstant) * glm::normalize(disp),-(diff2* SpringConstant) * glm::normalize(disp2));
+        o1->TotalStress+=std::abs(diff*SpringConstant);
         o2->ApplyForce((diff* SpringConstant) * glm::normalize(disp),(diff2* SpringConstant) * glm::normalize(disp2));
+        o2->TotalStress+=std::abs(diff*SpringConstant);
     }
     
 }

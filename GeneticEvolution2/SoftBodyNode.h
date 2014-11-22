@@ -19,6 +19,7 @@ public:
     inline void AddSpring(std::size_t spring);
     std::size_t springsUsed;
     static const int MAX_SPRINGS = 64;
+    float TotalStress;
     std::array<std::size_t, MAX_SPRINGS> springs;
 private:
 };

@@ -12,6 +12,7 @@
 #include <string>
 #include<functional>
 #include "SoftBodyAgent.h"
+#include "Wall.h"
 class EvolutionSystem
 {
 public:
@@ -23,22 +24,19 @@ public:
         WIRE_ONE,
     } CurrentRenderMode;
     inline void NextRenderMode();
-    struct Vertex
-    {
-        glm::vec3 position;
-        glm::vec3 color;
-        Vertex(glm::vec3 pos, glm::vec3 col) : position(pos), color(col) {}
-        Vertex(float x, float y, float z, float r, float g, float b) : position(x,y,z), color(r,g,b) {}
-    };
     EvolutionSystem(std::string _outputFileLocation);
     void Draw();
     void Update();
     const float TIME_STEP;
     const int NUM_AGENTS;
+    const float GRAVITATIONAL_ACCELERATION;
+    const float DRAG_COEFFICIENT=0.05f;
     int selectedAgent;
     inline void NextSelectedAgent();
     inline void PrevSelectedAgent();
     inline void ToggleAccelerated();
+    inline void IncreasePlaybackRate();
+    inline void DecreasePlaybackRate();
 private:
     GLuint vao,vbo,ibo;
     void generateBuffers();
@@ -55,10 +53,21 @@ private:
     std::string outputFileLocation;
     bool accelerate;
     void updateAgent(SoftBodyAgent* agent);
-    std::vector<Vertex> baseGrid;
-    void constructBaseGrid();
-    const float gridSquareLength;
+    std::vector<Wall> walls;
+    
+    unsigned int playbackRate;
 };
+
+void EvolutionSystem::IncreasePlaybackRate()
+{
+    playbackRate++;
+}
+
+void EvolutionSystem::DecreasePlaybackRate()
+{
+    playbackRate--;
+    if (playbackRate<1) playbackRate=1;
+}
 
 void EvolutionSystem::ToggleAccelerated()
 {
