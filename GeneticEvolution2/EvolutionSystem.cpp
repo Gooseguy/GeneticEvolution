@@ -13,7 +13,8 @@
 #include "glm/gtx/rotate_vector.hpp"
 #include <iostream>
 #include <chrono>
-EvolutionSystem::EvolutionSystem(std::string _outputFileLocation) : NUM_AGENTS(50),
+EvolutionSystem::EvolutionSystem(std::string _outputFileLocation, ConfigurationManager& configManager) :
+NUM_AGENTS(configManager.GetItem<int>("NumAgents")),
 TIME_STEP(0.0005),
 CurrentRenderMode(RenderMode::POINT_ALL),
 generationLength(15./TIME_STEP),
@@ -26,6 +27,9 @@ playbackRate(50),
 walls{Wall(glm::vec3(0,-0.5f,-0.7),glm::rotate(glm::vec3(0,0,1), 20.0f, glm::vec3(1,0,0)),1.9f)}
 //Wall(glm::vec3(0,0.5f,-0.3),glm::rotate(glm::vec3(0,0,1), -10.0f, glm::vec3(1,0,0)),0.9f)}
 {
+    SoftBodyAgent::INITIAL_CUBE_WIDTH = configManager.GetItem<int>("AgentCubeWidth");
+    SoftBodyAgent::NODE_SPACING = configManager.GetItem<float>("AgentNodeSpacing");
+    
     configurePerformanceFunctions();
     for (int i = 0; i<NUM_AGENTS;++i)
         agents.push_back(new SoftBodyAgent(glm::vec3(0,0,0.01), glm::vec3(RandomUtils::UniformFloat(),RandomUtils::UniformFloat(),RandomUtils::UniformFloat())));
@@ -202,21 +206,23 @@ void EvolutionSystem::nextGeneration()
     std::vector<float> intervals(agents.size(), 1.0);
     std::vector<float> probabilities(agents.size());
     float average=0;
+    float averageEnergy=0;
 //    float min=0;
     for (int i = 0; i<agents.size();++i)
     {
         probabilities[i] = performanceFunctions[currentFunction](*agents[i]);
+        averageEnergy+=agents[i]->TotalEnergy/generationLength;
 //        if (probabilities[i]<min || min==0) min=probabilities[i];
     }
-    
+    averageEnergy/=agents.size();
     for(auto& p : probabilities) {
 //        p-=min;
         average+=p;
     }
 //    for (auto& p :probabilities) p/=average;
     average/=probabilities.size();
-    stream << currentTime/generationLength << "," << average << std::endl;
-    std::cout << currentTime/generationLength << "," << average << ","<<std::endl;
+    stream << currentTime/generationLength << "," << average << "," << averageEnergy << std::endl;
+    std::cout << currentTime/generationLength << "," << average << "," << averageEnergy << std::endl;
     std::piecewise_constant_distribution<float> distribution(intervals.begin(), intervals.end(), probabilities.begin());
     std::vector<SoftBodyAgent*> newAgents(agents.size());
     for (int i = 0; i<agents.size();++i)
@@ -233,8 +239,8 @@ void EvolutionSystem::nextGeneration()
 void EvolutionSystem::configurePerformanceFunctions()
 {
     performanceFunctions.push_back(std::function<float(SoftBodyAgent&)>([this](SoftBodyAgent& agent) {
-        return pow(agent.TotalDistance / generationLength,2)/(agent.Size+0.001)*generationLength;
+        return pow(agent.TotalDistance / agent.TotalEnergy,2)/(agent.Size+0.001)*generationLength;
     }));performanceFunctions.push_back(std::function<float(SoftBodyAgent&)>([this](SoftBodyAgent& agent) {
-        return (agent.TotalMinimumHeight / generationLength)/(agent.Size*generationLength+0.001);
+        return (agent.TotalMinimumHeight / agent.TotalEnergy)/(agent.Size*generationLength+0.001);
     }));
 }

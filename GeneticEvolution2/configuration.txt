@@ -1,0 +1,8 @@
+F WindowWidth:1280
+F WindowHeight:720
+I NumAgents:10
+I AgentCubeWidth:2
+F AgentNodeSpacing:0.05f
+F TimeStep:0.005f
+I GenerationLength:15
+F GravitationalAcceleration:-3.f

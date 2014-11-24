@@ -7,7 +7,7 @@
 //
 #pragma once
 #include "glm/glm.hpp"
-
+#include "glm/gtx/norm.hpp"
 
 class PhysicsObject
 {
@@ -23,6 +23,7 @@ public:
     
     inline void ApplyForce(glm::vec3 force);
     inline void ApplyForce(glm::vec3 force, glm::vec3 nextForce);
+    inline float GetKineticEnergy();
 private:
 };
 
@@ -34,4 +35,9 @@ void PhysicsObject::ApplyForce(glm::vec3 force,glm::vec3 nextForce)
 {
     NetForce+=force;
     NextNetForce+=nextForce;
+}
+
+float PhysicsObject::GetKineticEnergy()
+{
+    return 0.5f * Mass * glm::length2(Velocity);
 }

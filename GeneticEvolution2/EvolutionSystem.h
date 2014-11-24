@@ -13,6 +13,8 @@
 #include<functional>
 #include "SoftBodyAgent.h"
 #include "Wall.h"
+#include "ConfigurationManager.h"
+
 class EvolutionSystem
 {
 public:
@@ -24,7 +26,7 @@ public:
         WIRE_ONE,
     } CurrentRenderMode;
     inline void NextRenderMode();
-    EvolutionSystem(std::string _outputFileLocation);
+    EvolutionSystem(std::string _outputFileLocation, ConfigurationManager& configManager);
     void Draw();
     void Update();
     const float TIME_STEP;

@@ -11,7 +11,8 @@
 #include "glm/gtx/euler_angles.hpp"
 #include "RandomUtils.h"
 #include "Spring.h"
-const float SoftBodyAgent::NODE_SPACING = 0.05f;
+float SoftBodyAgent::NODE_SPACING = 0.05f;
+int SoftBodyAgent::INITIAL_CUBE_WIDTH=3;
 
 SoftBodyAgent::SoftBodyAgent(glm::vec3 pos, glm::vec3 _color) : TotalMinimumHeight(0),color(_color), Size(0)
 {
@@ -88,10 +89,23 @@ void SoftBodyAgent::getSize()
 
 void SoftBodyAgent::Update(float timeStep, int currentTime)
 {
+    float potentialEnergy=0;
     for (auto& spring : springs)
+    {
         spring.ApplyForces(currentTime, nodes);
+        potentialEnergy+=spring.GetEnergy(nodes,currentTime);
+    }
+    float kineticEnergy=0;
     for (auto& node : nodes)
+    {
         node.Update(timeStep);
+        kineticEnergy+=node.GetKineticEnergy();
+    }
+    kineticEnergy/=nodes.size();
+    potentialEnergy/=springs.size();
+    assert(kineticEnergy+potentialEnergy>0);
+    TotalEnergy+=kineticEnergy;
+    TotalEnergy+=potentialEnergy;
     SoftBodyNode* lowestNode = nullptr;
     glm::vec3 averageDisp=glm::vec3();
 //    float averageHeight = 0;
@@ -170,8 +184,8 @@ void SoftBodyAgent::Mutate()
     {
         spring.ExtensionAmount+=RandomUtils::Normal<float>(0, extensionAmountVariance);
         float extensionAmountMax=spring.EquilibriumDist*20;
-        if (spring.ExtensionAmount>extensionAmountMax)spring.ExtensionAmount=extensionAmountMax;
-        else if (spring.ExtensionAmount<-extensionAmountMax)spring.ExtensionAmount=-extensionAmountMax;
+        if (spring.ExtensionAmount>extensionAmountMax) spring.ExtensionAmount=extensionAmountMax;
+        else if (spring.ExtensionAmount<-extensionAmountMax) spring.ExtensionAmount=-extensionAmountMax;
 //        spring.EquilibriumDist+=RandomUtils::Instance.Normal<float>(0, 0.1);
         spring.ExtensionLength+=RandomUtils::Normal<float>(0, extensionLengthVariance);
         spring.ExtensionOffset+=RandomUtils::Normal<float>(0, extensionOffsetVariance);

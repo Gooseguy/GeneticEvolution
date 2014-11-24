@@ -24,6 +24,19 @@ public:
     int ExtensionPeriod;
     int ExtensionLength;
     int ExtensionOffset;
+    inline bool IsExtending(int currentTime);
+    inline float GetEnergy(std::vector<SoftBodyNode>& objects,int currentTime);
 private:
     
 };
+
+bool Spring::IsExtending(int currentTime)
+{
+    return (currentTime+ExtensionOffset)%ExtensionPeriod < ExtensionLength;
+}
+
+float Spring::GetEnergy(std::vector<SoftBodyNode>& objects,int currentTime)
+{
+    float diff =glm::length2(objects[obj1].Position-objects[obj2].Position) - EquilibriumDist - IsExtending(currentTime)*ExtensionAmount;
+    return 0.5f * SpringConstant * diff * diff;
+}

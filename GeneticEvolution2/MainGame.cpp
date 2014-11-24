@@ -17,6 +17,8 @@
 
 MainGame::MainGame()
 {
+    ConfigurationManager configManager(resourcePath() + "configuration.txt");
+    
     //if SDL fails, close program
     if (SDL_Init(SDL_INIT_VIDEO)) throw std::logic_error("Failed to initialize SDL!  " + std::string(SDL_GetError()));
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
@@ -25,7 +27,7 @@ MainGame::MainGame()
     SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 2);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
     SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
-    window = SDL_CreateWindow("Genetic Algorithm", 0, 0, 1280, 720, SDL_WINDOW_OPENGL);
+    window = SDL_CreateWindow("Genetic Algorithm", 0, 0, configManager.GetItem<float>("WindowWidth"), configManager.GetItem<float>("WindowHeight"), SDL_WINDOW_OPENGL);
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetSwapInterval(1);
     SDL_SetRelativeMouseMode(SDL_TRUE);
@@ -33,13 +35,16 @@ MainGame::MainGame()
     SDL_GLContext context = SDL_GL_CreateContext(window);
     if (context==nullptr) throw std::logic_error("SDL_GL could not be initialized!");
     
+    
+    
     GLManager glManager(resourcePath() + "fragmentShader.glsl", resourcePath() + "vertexShader.glsl");
     std::string fileLoc =resourcePath() + "performance.csv";
     {
         std::ofstream stream(fileLoc, std::ios::out);
+        stream << "time,performance,energy" << std::endl;
     }
-    EvolutionSystem evolutionSystem(fileLoc);
-    Camera camera(1280, 720);
+    EvolutionSystem evolutionSystem(fileLoc, configManager);
+    Camera camera(configManager.GetItem<float>("WindowWidth"), configManager.GetItem<float>("WindowHeight"));
     
     while (GameState!=GameState::EXIT)
     {

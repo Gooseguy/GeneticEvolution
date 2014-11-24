@@ -32,7 +32,7 @@ void Spring::ApplyForces(int currentTime, std::vector<SoftBodyNode>& objects)
     float dist2 = glm::length(disp2);
     float diff = dist-EquilibriumDist;
     float diff2 = dist2-EquilibriumDist;
-    if ((currentTime+ExtensionOffset)%ExtensionPeriod < ExtensionLength) {
+    if (IsExtending(currentTime)) {
         diff-=ExtensionAmount;
         diff2-=ExtensionAmount;
     }
