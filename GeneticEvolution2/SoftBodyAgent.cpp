@@ -115,6 +115,7 @@ void SoftBodyAgent::Update(float timeStep, int currentTime)
 //    assert(kineticEnergy+potentialEnergy>0);
     TotalEnergy+=kineticEnergy;
     TotalEnergy+=potentialEnergy;
+//    assert(!std::isnan(TotalEnergy));
     SoftBodyNode* lowestNode = nullptr;
     glm::vec3 averageDisp=glm::vec3();
 //    float averageHeight = 0;

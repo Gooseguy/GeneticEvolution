@@ -43,8 +43,10 @@ void Camera::Update()
     int x, y;
     SDL_GetRelativeMouseState(&x, &y);
     const float rotationSpeed = 0.01;
-    rotationX+=rotationSpeed*x;
+    rotationX-=rotationSpeed*x;
     rotationZ-=rotationSpeed*y;
+    if (rotationZ<0) rotationZ=0;
+    if (rotationZ>M_PI) rotationZ=M_PI;
     rotationQuat = angleAxis(rotationZ,(glm::vec3(0,0,1))) * angleAxis(rotationX,(glm::vec3(1,0,0)));
     const float movementSpeed = 0.01;
     const Uint8* state = SDL_GetKeyboardState(nullptr);

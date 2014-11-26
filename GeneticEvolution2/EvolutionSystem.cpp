@@ -16,7 +16,8 @@
 
 
 
-EvolutionSystem::EvolutionSystem(std::string _outputFileLocation, ConfigurationManager& configManager) :
+EvolutionSystem::EvolutionSystem(std::string _outputFileLocation, ConfigurationManager& configManager, int numCores) :
+NUM_CORES(numCores),
 NUM_AGENTS(configManager.GetItem<int>("NumAgents")),
 TIME_STEP(configManager.GetItem<float>("TimeStep")),
 CurrentRenderMode(RenderMode::POINT_ALL),
@@ -52,7 +53,7 @@ walls{Wall(glm::vec3(0,-0.5f,0),glm::rotate(glm::vec3(0,0,1), 0.0f, glm::vec3(1,
         stream << "time,average performance,maximum performance,energy" << std::endl;
     }
     
-    printf("%-10s %10s %10s %10s\n", "time", "avg perf", "max perf", "energy");
+    printf("%-10s %10s %10s %10s %10s %10s\n", "time", "avg perf", "max perf", "energy", "avg node#", "update ms");
     
     configurePerformanceFunctions();
     for (int i = 0; i<NUM_AGENTS;++i)
@@ -279,41 +280,33 @@ void EvolutionSystem::Draw()
 }
 
 
-void EvolutionSystem::updateAgent(SoftBodyAgent *agent)
+void EvolutionSystem::updateAgent(size_t start, size_t end)
 {
-    int rep = accelerate ? generationLength : 1;
-    for (int i =0;i<rep;++i)
+    for (int k = 0; k<(accelerate ? generationLength : 1);++k)
     {
-        //apply external forces
-        for (auto& node : agent->nodes)
+        for (int i = start; i<end;++i)
         {
-            //            node.ApplyForce(glm::vec3(0,0,-1));
-            //            if (node->Position.x > 0.25) node->ApplyForce(glm::vec3(0,1,0));
-            node.ApplyForce(glm::vec3(0,0,GRAVITATIONAL_ACCELERATION*node.Mass));
-            if (node.Velocity!=glm::vec3())
-                node.ApplyForce(-DRAG_COEFFICIENT*glm::normalize(node.Velocity));
-//            if (node.Position.z < 0)
-//            {
-//                float normalForce =-node.Position.z*10000 - node.NetForce.z;
-//                const float k_friction = 0.9;
-//                node.ApplyForce(glm::vec3(0,0,normalForce));
-//                if (node.Velocity.x!=0 && node.Velocity.y!=0)
-//                    node.ApplyForce(-normalForce * k_friction * glm::normalize(glm::vec3(node.Velocity.x,node.Velocity.y,0)));
-//            }
-            for (Wall& wall : walls) wall.ApplyForce(dynamic_cast<PhysicsObject*>(&node));
+            SoftBodyAgent* agent = agents[i];
+            //apply external forces
+            for (auto& node : agent->nodes)
+            {
+                node.ApplyForce(glm::vec3(0,0,GRAVITATIONAL_ACCELERATION*node.Mass));
+                if (node.Velocity!=glm::vec3())
+                    node.ApplyForce(-DRAG_COEFFICIENT*glm::normalize(node.Velocity));
+                for (Wall& wall : walls) wall.ApplyForce(dynamic_cast<PhysicsObject*>(&node));
+            }
+            //    selectedAgent->nodes[0]->ApplyForce(glm::vec3(20,0,0));
+            agent->Update(TIME_STEP, currentTime*TIME_STEP*100);
         }
-        //    selectedAgent->nodes[0]->ApplyForce(glm::vec3(20,0,0));
-        agent->Update(TIME_STEP, currentTime*TIME_STEP*100);
     }
 }
 void EvolutionSystem::Update()
 {
     if (!accelerate)
     {
-        for (int i = 0; i<(accelerate ? 1 : playbackRate); ++i)
+        for (int i = 0; i<playbackRate; ++i)
         {
-            for (auto& agent : agents)
-                updateAgent(agent);
+            for (int j = 0; j<agents.size();++j) updateAgent(j, j+1);
             currentTime++;
             
             if (currentTime%generationLength==0) nextGeneration();
@@ -321,17 +314,23 @@ void EvolutionSystem::Update()
     }
     else
     {
-//        auto t = std::chrono::high_resolution_clock::now();
+        auto t = std::chrono::high_resolution_clock::now();
         std::vector<std::thread> threads;
-        threads.reserve(agents.size());
-        for (SoftBodyAgent* agent : agents) threads.push_back(std::thread(&EvolutionSystem::updateAgent, this, agent));
+        threads.reserve(NUM_CORES);
+        for (int i = 0; i<NUM_CORES;++i)
+        {
+            size_t inc = agents.size()/NUM_CORES;
+            size_t start = i*inc;
+            size_t end = (i+1)*inc-1;
+            if (end > agents.size()) end = agents.size();
+            threads.push_back(std::thread(&EvolutionSystem::updateAgent, this, start, end));
+        }
         
         currentTime+=generationLength;
         for (auto& thread : threads) thread.join();
         
-//        std::cout << "Time passed: " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - t).count() << " ms" << std::endl;
+        updateTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - t).count();
         nextGeneration();
-        
         
     }
 }
@@ -342,7 +341,7 @@ void EvolutionSystem::nextGeneration()
     std::vector<float> probabilities(agents.size());
     float average=0;
     float averageEnergy=0;
-//    float min=0;
+    float avgNumNodes=0;
     for (int i = 0; i<agents.size();++i)
     {
         float perf = performanceFunctions[currentFunction](*agents[i]);
@@ -350,20 +349,19 @@ void EvolutionSystem::nextGeneration()
             probabilities[i] = perf;
         else probabilities[i] = 0;
         averageEnergy+=agents[i]->TotalEnergy/generationLength;
-//        if (probabilities[i]<min || min==0) min=probabilities[i];
+        avgNumNodes+=agents[i]->nodes.size();
     }
+    avgNumNodes/=agents.size();
     averageEnergy/=agents.size();
     float max = 0;
     for(auto& p : probabilities) {
-//        p-=min;
         average+=p;
         if (p>max) max = p;
     }
-//    for (auto& p :probabilities) p/=average;
     average/=probabilities.size();
     
     stream << currentTime/generationLength << "," << average << "," << max << "," << averageEnergy << std::endl;
-    printf("%-10.0f %10.1f %10.1f %10.1f\n", (float)currentTime/generationLength, average, max, averageEnergy);
+    printf("%-10.0f %10.1f %10.1f %10.1f %10.2f %10.0f\n", (float)currentTime/generationLength, average, max, averageEnergy, avgNumNodes, updateTime);
     std::piecewise_constant_distribution<float> distribution(intervals.begin(), intervals.end(), probabilities.begin());
     std::vector<SoftBodyAgent*> newAgents(agents.size());
     for (int i = 0; i<agents.size();++i)

@@ -28,9 +28,11 @@ public:
         SOLID_ALL,
     } CurrentRenderMode;
     inline void NextRenderMode();
-    EvolutionSystem(std::string _outputFileLocation, ConfigurationManager& configManager);
+    EvolutionSystem(std::string _outputFileLocation, ConfigurationManager& configManager, int numCores);
     void Draw();
     void Update();
+    
+    const int NUM_CORES;
     const float TIME_STEP;
     const int NUM_AGENTS;
     const float GRAVITATIONAL_ACCELERATION;
@@ -59,8 +61,9 @@ private:
     std::string outputFileLocation;
     bool accelerate;
     bool accelerateNextRound;
-    void updateAgent(SoftBodyAgent* agent);
+    void updateAgent(size_t start, size_t end);
     std::vector<Wall> walls;
+    float updateTime;
     
     unsigned int playbackRate;
 };

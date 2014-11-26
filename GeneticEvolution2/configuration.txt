@@ -22,5 +22,5 @@ F NewAgentProbability:0.01
 F GeometryMutationFactor:0.005
 F RenderColorMult:0.0001
 F DefaultNodeMass:1.
-F RemoveNodeProbability:0
+F RemoveNodeProbability:0.00
 F AddNodeProbability:0.01

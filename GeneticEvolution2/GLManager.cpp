@@ -39,7 +39,6 @@ GLManager::GLManager(const std::string& fragName, const std::string& vertName, C
 
 void GLManager::initGL(ConfigurationManager& configManager)
 {
-//    glDisable(GL_CULL_FACE);
     glDisable(GL_CULL_FACE);
     if (configManager.GetItem<bool>("DepthTesting")) glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
