@@ -1,6 +1,9 @@
 F WindowWidth:1280
 F WindowHeight:720
 B DepthTesting:true
+B Multisampling:true
+I MultisampleBuffers:4
+I MultisampleSamples:8
 I NumAgents:50
 I AgentCubeWidth:2
 F AgentNodeSpacing:0.05f

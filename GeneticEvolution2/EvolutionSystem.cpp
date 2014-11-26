@@ -47,6 +47,12 @@ walls{Wall(glm::vec3(0,-0.5f,0),glm::rotate(glm::vec3(0,0,1), 0.0f, glm::vec3(1,
     SoftBodyAgent::AddNodeProbability=configManager.GetItem<float>("AddNodeProbability");
     
     SoftBodyNode::DefaultNodeMass = configManager.GetItem<float>("DefaultNodeMass");
+    {
+        std::ofstream stream(_outputFileLocation, std::ios::out);
+        stream << "time,average performance,maximum performance,energy" << std::endl;
+    }
+    
+    printf("%-10s %10s %10s %10s\n", "time", "avg perf", "max perf", "energy");
     
     configurePerformanceFunctions();
     for (int i = 0; i<NUM_AGENTS;++i)
@@ -339,19 +345,25 @@ void EvolutionSystem::nextGeneration()
 //    float min=0;
     for (int i = 0; i<agents.size();++i)
     {
-        probabilities[i] = performanceFunctions[currentFunction](*agents[i]);
+        float perf = performanceFunctions[currentFunction](*agents[i]);
+        if (!std::isnan(perf) && perf<1e10f)
+            probabilities[i] = perf;
+        else probabilities[i] = 0;
         averageEnergy+=agents[i]->TotalEnergy/generationLength;
 //        if (probabilities[i]<min || min==0) min=probabilities[i];
     }
     averageEnergy/=agents.size();
+    float max = 0;
     for(auto& p : probabilities) {
 //        p-=min;
         average+=p;
+        if (p>max) max = p;
     }
 //    for (auto& p :probabilities) p/=average;
     average/=probabilities.size();
-    stream << currentTime/generationLength << "," << average << "," << averageEnergy << std::endl;
-    std::cout << currentTime/generationLength << "," << average << "," << averageEnergy << std::endl;
+    
+    stream << currentTime/generationLength << "," << average << "," << max << "," << averageEnergy << std::endl;
+    printf("%-10.0f %10.1f %10.1f %10.1f\n", (float)currentTime/generationLength, average, max, averageEnergy);
     std::piecewise_constant_distribution<float> distribution(intervals.begin(), intervals.end(), probabilities.begin());
     std::vector<SoftBodyAgent*> newAgents(agents.size());
     for (int i = 0; i<agents.size();++i)

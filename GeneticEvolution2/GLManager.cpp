@@ -44,7 +44,7 @@ void GLManager::initGL(ConfigurationManager& configManager)
     if (configManager.GetItem<bool>("DepthTesting")) glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
     glPointSize(5);
-    glEnable(GL_MULTISAMPLE);
+    if (configManager.GetItem<bool>("Multisampling")) glEnable(GL_MULTISAMPLE);
     
 }
 //compile an OpenGL shader
