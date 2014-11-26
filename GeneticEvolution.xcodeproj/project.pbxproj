@@ -114,7 +114,6 @@
 			isa = PBXGroup;
 			children = (
 				AA2BEFA71A196585006186EB /* glm */,
-				AA2BEFA81A196585006186EB /* GLManager.h */,
 				AA2BEFAC1A1965C9006186EB /* ResourcePath.hpp */,
 				AA2BEFAD1A1965C9006186EB /* ResourcePath.mm */,
 				AA2BEFA91A196585006186EB /* main.cpp */,
@@ -124,13 +123,14 @@
 				AA2BEF911A19657C006186EB /* SoftBodyAgent.h */,
 				AA2BEF921A19657C006186EB /* Spring.cpp */,
 				AA2BEF991A19657C006186EB /* Spring.h */,
-				AA2BEF931A19657C006186EB /* Camera.cpp */,
 				AA2BEF951A19657C006186EB /* EvolutionSystem.h */,
 				AA2BEF8E1A19657C006186EB /* EvolutionSystem.cpp */,
 				AA2BEF961A19657C006186EB /* Camera.h */,
+				AA2BEF931A19657C006186EB /* Camera.cpp */,
 				AA2BEF971A19657C006186EB /* SoftBodyNode.h */,
 				AA2BEF981A19657C006186EB /* SoftBodyNode.cpp */,
 				AA2BEF9A1A19657C006186EB /* GLManager.cpp */,
+				AA2BEFA81A196585006186EB /* GLManager.h */,
 				AA2BEF9B1A19657C006186EB /* PhysicsObject.cpp */,
 				AA2BEF9C1A19657C006186EB /* PhysicsObject.h */,
 				AA2BEF9D1A19657C006186EB /* GeneticEvolution.1 */,

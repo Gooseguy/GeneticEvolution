@@ -9,6 +9,7 @@
 #include "GLManager.h"
 #include <fstream>
 #include <vector>
+#include "ConfigurationManager.h"
 
 GLProgram::GLProgram(const std::string& fragName, const std::string& vertName) : programID(glCreateProgram()), fragmentShader(CompileShader(fragName, GL_FRAGMENT_SHADER)), vertexShader(CompileShader(vertName, GL_VERTEX_SHADER))
 {
@@ -29,18 +30,18 @@ GLProgram::GLProgram(const std::string& fragName, const std::string& vertName) :
     glDeleteShader(fragmentShader);
 }
 
-GLManager::GLManager(const std::string& fragName, const std::string& vertName)
+GLManager::GLManager(const std::string& fragName, const std::string& vertName, ConfigurationManager& configManager)
 {
     AddProgram(fragName, vertName);
     Programs[0].Use();
-    initGL();
+    initGL(configManager);
 }
 
-void GLManager::initGL()
+void GLManager::initGL(ConfigurationManager& configManager)
 {
 //    glDisable(GL_CULL_FACE);
     glDisable(GL_CULL_FACE);
-    glEnable(GL_DEPTH_TEST);
+    if (configManager.GetItem<bool>("DepthTesting")) glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
     glPointSize(5);
     glEnable(GL_MULTISAMPLE);

@@ -9,11 +9,14 @@
 #include "Spring.h"
 #include "RandomUtils.h"
 
+float Spring::DefaultSpringConstant = 125.f;
+
+
 Spring::Spring(std::size_t o1,std::size_t o2, std::vector<SoftBodyNode>& objects) : Spring(o1,o2,objects,glm::length(objects[o1].Position-objects[o2].Position))
 {
     
 }
-Spring::Spring(std::size_t o1,std::size_t o2, std::vector<SoftBodyNode>& objects, float equilibriumDist) : obj1(o1), obj2(o2), EquilibriumDist(equilibriumDist), SpringConstant(300), ExtensionAmount(RandomUtils::Normal<float>(0, 0.0005f)*0.5f), ExtensionPeriod(50), ExtensionOffset(5*RandomUtils::UniformFloat()), ExtensionLength(RandomUtils::UniformFloat() * ExtensionPeriod)
+Spring::Spring(std::size_t o1,std::size_t o2, std::vector<SoftBodyNode>& objects, float equilibriumDist) : obj1(o1), obj2(o2), EquilibriumDist(equilibriumDist), SpringConstant(DefaultSpringConstant), ExtensionAmount(RandomUtils::Normal<float>(0, 0.0005f)*0.5f), ExtensionPeriod(50), ExtensionOffset(5*RandomUtils::UniformFloat()), ExtensionLength(RandomUtils::UniformFloat() * ExtensionPeriod)
 {
     
 }

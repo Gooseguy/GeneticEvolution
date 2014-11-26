@@ -19,6 +19,7 @@ public:
     std::size_t obj2;
     void ApplyForces(int currentTime, std::vector<SoftBodyNode>& objects);
     float EquilibriumDist;
+    static float DefaultSpringConstant;
     float SpringConstant;
     float ExtensionAmount;
     int ExtensionPeriod;

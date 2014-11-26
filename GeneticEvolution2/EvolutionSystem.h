@@ -24,6 +24,8 @@ public:
         WIRE_ALL,
         POINT_ONE,
         WIRE_ONE,
+        SOLID_ONE,
+        SOLID_ALL,
     } CurrentRenderMode;
     inline void NextRenderMode();
     EvolutionSystem(std::string _outputFileLocation, ConfigurationManager& configManager);
@@ -32,13 +34,15 @@ public:
     const float TIME_STEP;
     const int NUM_AGENTS;
     const float GRAVITATIONAL_ACCELERATION;
-    const float DRAG_COEFFICIENT=0.05f;
+    const float DRAG_COEFFICIENT;
+    const float NEW_AGENT_PROBABILITY;
     int selectedAgent;
     inline void NextSelectedAgent();
     inline void PrevSelectedAgent();
     inline void ToggleAccelerated();
     inline void IncreasePlaybackRate();
     inline void DecreasePlaybackRate();
+    void SelectClosestAgent(glm::vec3 ref);
 private:
     GLuint vao,vbo,ibo;
     void generateBuffers();
@@ -54,6 +58,7 @@ private:
     void configurePerformanceFunctions();
     std::string outputFileLocation;
     bool accelerate;
+    bool accelerateNextRound;
     void updateAgent(SoftBodyAgent* agent);
     std::vector<Wall> walls;
     
@@ -73,7 +78,8 @@ void EvolutionSystem::DecreasePlaybackRate()
 
 void EvolutionSystem::ToggleAccelerated()
 {
-    accelerate=!accelerate;
+    if (!accelerate) accelerateNextRound=true;
+    else accelerate=false;
 }
 
 void EvolutionSystem::NextRenderMode()
@@ -90,8 +96,15 @@ void EvolutionSystem::NextRenderMode()
             CurrentRenderMode=RenderMode::WIRE_ONE;
             break;
         case RenderMode::WIRE_ONE:
+            CurrentRenderMode=RenderMode::SOLID_ONE;
+            break;
+        case RenderMode::SOLID_ONE:
             CurrentRenderMode=RenderMode::POINT_ALL;
             break;
+    //Not including "SOLID_ALL" because it is too slow.
+//        case RenderMode::SOLID_ALL:
+//            CurrentRenderMode=RenderMode::POINT_ALL;
+//            break;
     }
 }
 

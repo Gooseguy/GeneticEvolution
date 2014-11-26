@@ -9,17 +9,18 @@
 #include "glm/glm.hpp"
 #include "glm/gtc/quaternion.hpp"
 #include "glm/gtx/quaternion.hpp"
-
+class ConfigurationManager;
 class Camera
 {
 public:
-    Camera(int windowWidth, int windowHeight);
+    Camera(int windowWidth, int windowHeight, ConfigurationManager& configManager);
     glm::mat4 GetTransformMatrix();
     glm::mat4 GetProjectionMatrix();
     void Update();
     float FieldOfView;
     const float FAR_PLANE;
     const float NEAR_PLANE;
+    inline glm::vec3 GetPosition();
 private:
     
     float rotationX,rotationZ;
@@ -28,3 +29,5 @@ private:
     float aspectRatio;
     glm::quat angleAxis(float angle, glm::vec3 axis);
 };
+
+glm::vec3 Camera::GetPosition() { return position; }

@@ -21,8 +21,8 @@ MainGame::MainGame()
     
     //if SDL fails, close program
     if (SDL_Init(SDL_INIT_VIDEO)) throw std::logic_error("Failed to initialize SDL!  " + std::string(SDL_GetError()));
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
     SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 8);
     SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 2);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
@@ -37,14 +37,14 @@ MainGame::MainGame()
     
     
     
-    GLManager glManager(resourcePath() + "fragmentShader.glsl", resourcePath() + "vertexShader.glsl");
+    GLManager glManager(resourcePath() + "fragmentShader.glsl", resourcePath() + "vertexShader.glsl", configManager);
     std::string fileLoc =resourcePath() + "performance.csv";
     {
         std::ofstream stream(fileLoc, std::ios::out);
         stream << "time,performance,energy" << std::endl;
     }
     EvolutionSystem evolutionSystem(fileLoc, configManager);
-    Camera camera(configManager.GetItem<float>("WindowWidth"), configManager.GetItem<float>("WindowHeight"));
+    Camera camera(configManager.GetItem<float>("WindowWidth"), configManager.GetItem<float>("WindowHeight"), configManager);
     
     while (GameState!=GameState::EXIT)
     {
@@ -53,7 +53,7 @@ MainGame::MainGame()
         glManager.Programs[0].SetMatrix4("transformMatrix", glm::value_ptr(camera.GetTransformMatrix()));
         Draw(evolutionSystem);
         SDL_GL_SwapWindow(window);
-        HandleEvents(evolutionSystem);
+        HandleEvents(evolutionSystem,camera);
     }
 }
 
@@ -70,7 +70,7 @@ void MainGame::Draw(EvolutionSystem& evolutionSystem)
     evolutionSystem.Draw();
 }
 
-void MainGame::HandleEvents(EvolutionSystem& evolutionSystem)
+void MainGame::HandleEvents(EvolutionSystem& evolutionSystem, Camera& camera)
 {
     SDL_Event event;
     while (SDL_PollEvent(&event))
@@ -108,6 +108,10 @@ void MainGame::HandleEvents(EvolutionSystem& evolutionSystem)
                     break;
             }
             break;
+            case SDL_MOUSEBUTTONDOWN:
+                evolutionSystem.SelectClosestAgent(camera.GetPosition());
+                break;
         }
+        
     }
 }

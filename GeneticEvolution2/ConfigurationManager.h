@@ -18,5 +18,6 @@ public:
 private:
     std::unordered_map<std::string, float> floatItems;
     std::unordered_map<std::string, int> intItems;
+    std::unordered_map<std::string, bool> boolItems;
     const char SEPARATOR_CHAR;
 };

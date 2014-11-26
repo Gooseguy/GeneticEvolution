@@ -14,11 +14,13 @@ class SoftBodyNode : public PhysicsObject
 public:
     SoftBodyNode(glm::vec3 position);
     SoftBodyNode(const SoftBodyNode& node);
+    SoftBodyNode& operator=(const SoftBodyNode& other);
     void Update(float timeStep) override;
     inline int GetSpringsUsed();
     inline void AddSpring(std::size_t spring);
     std::size_t springsUsed;
     static const int MAX_SPRINGS = 64;
+    static float DefaultNodeMass;
     float TotalStress;
     std::array<std::size_t, MAX_SPRINGS> springs;
 private:

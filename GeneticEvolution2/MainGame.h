@@ -11,7 +11,7 @@
 #include <unistd.h>
 #include <string>
 
-
+class Camera;
 class MainGame
 {
 public:
@@ -22,7 +22,7 @@ public:
     MainGame();
     void Update(EvolutionSystem& evolutionSystem);
     void Draw(EvolutionSystem& evolutionSystem);
-    void HandleEvents(EvolutionSystem& evolutionSystem);
+    void HandleEvents(EvolutionSystem& evolutionSystem, Camera& camera);
 private:
     SDL_Window* window;
 };

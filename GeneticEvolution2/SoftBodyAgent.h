@@ -26,6 +26,7 @@ public:
     std::vector<glm::vec3> initialPositions;
     void Mutate();
     void RemoveNode(std::size_t node);
+    void AddNode(SoftBodyNode node);
     float TotalMinimumHeight;
     float TotalDistance;
     glm::vec3 color;
@@ -33,6 +34,19 @@ public:
     glm::vec3 StartingPos;
     inline glm::vec3 GetNodeColor(SoftBodyNode& node);
     float TotalEnergy;
+    
+    static float ExtensionAmountVariance;
+    static float ExtensionPeriodVariance;
+    static float ExtensionLengthVariance;
+    static float ExtensionOffsetVariance;
+    static float ExtensionAmountMaxMult;
+    static float GeometryMutationFactor;
+    static float RenderColorMult;
+    static float RemoveNodeProbability;
+    static float AddNodeProbability;
+    
+    inline glm::vec3 GetPosition();
+    
 private:
     void mutateGeometry();
     inline int initialNodeIndex(int x, int y, int z);
@@ -41,11 +55,19 @@ private:
     void getSize();
 };
 
+glm::vec3 SoftBodyAgent::GetPosition()
+{
+    glm::vec3 pos;
+    for (auto& node : nodes) pos+=node.Position;
+    pos/=nodes.size();
+    return pos;
+}
+
 glm::vec3 SoftBodyAgent::GetNodeColor(SoftBodyNode& node)
 {
     float mult = node.TotalStress;
     node.TotalStress=0;
-    return color+mult*0.00001f;
+    return color+mult*RenderColorMult;
 }
 
 int SoftBodyAgent::initialNodeIndex(int x, int y, int z)

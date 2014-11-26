@@ -73,19 +73,19 @@ void GLProgram::SetVector2(const std::string &name, const glm::vec2 &value)
     glUniform2fv(glGetUniformLocation(programID, name.c_str()),1,  glm::value_ptr(value));
 }
 
-
+class ConfigurationManager;
 //this class further abstracts the GLProgram class, allowing for additional OpenGL configuration
 class GLManager
 {
 public:
     std::vector<GLProgram> Programs;
-    GLManager(const std::string& fragName, const std::string& vertName);
+    GLManager(const std::string& fragName, const std::string& vertName, ConfigurationManager& configManager);
     int AddProgram(const std::string fragmentShaderName, const std::string& vertexShaderName);
     void AddUniformBuffer(const std::string& name, std::size_t size, std::initializer_list<GLuint> programs);
     void UpdateBuffer(const std::string& name, const void* value, std::size_t size);
 private:
     std::unordered_map<std::string, GLuint> uniformBuffers;
     //some OpenGL configuration
-    void initGL();
+    void initGL(ConfigurationManager& configManager);
 };
 

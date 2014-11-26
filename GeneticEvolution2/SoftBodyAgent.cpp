@@ -13,6 +13,15 @@
 #include "Spring.h"
 float SoftBodyAgent::NODE_SPACING = 0.05f;
 int SoftBodyAgent::INITIAL_CUBE_WIDTH=3;
+float SoftBodyAgent::ExtensionAmountVariance = 0.05f;
+float SoftBodyAgent::ExtensionPeriodVariance = 0.05f;
+float SoftBodyAgent::ExtensionLengthVariance = 0.05f;
+float SoftBodyAgent::ExtensionOffsetVariance = 0.05f;
+float SoftBodyAgent::ExtensionAmountMaxMult = 4.f;
+float SoftBodyAgent::GeometryMutationFactor = 0.001f;
+float SoftBodyAgent::RenderColorMult=0.00001f;
+float SoftBodyAgent::AddNodeProbability=0.01f;
+float SoftBodyAgent::RemoveNodeProbability=0.0f;
 
 SoftBodyAgent::SoftBodyAgent(glm::vec3 pos, glm::vec3 _color) : TotalMinimumHeight(0),color(_color), Size(0)
 {
@@ -63,7 +72,7 @@ color(agent.color)
     mutateGeometry();
     for (int i = 0; i<agent.nodes.size();++i)
     {
-        nodes.push_back(SoftBodyNode(agent.initialPositions[i]));
+        nodes.push_back(SoftBodyNode(initialPositions[i]));
     }
     for (auto& spring : agent.springs)
         springs.push_back(Spring(spring, nodes));
@@ -103,7 +112,7 @@ void SoftBodyAgent::Update(float timeStep, int currentTime)
     }
     kineticEnergy/=nodes.size();
     potentialEnergy/=springs.size();
-    assert(kineticEnergy+potentialEnergy>0);
+//    assert(kineticEnergy+potentialEnergy>0);
     TotalEnergy+=kineticEnergy;
     TotalEnergy+=potentialEnergy;
     SoftBodyNode* lowestNode = nullptr;
@@ -129,8 +138,10 @@ void SoftBodyAgent::Update(float timeStep, int currentTime)
     Size+=newSize;
     TotalMinimumHeight+=lowestNode->Position.z;
     TotalDistance+=glm::length(averageDisp-StartingPos);
-    if (std::isnan(TotalDistance))
-        std::cout << averageDisp.x << ","<< averageDisp.y << ","<< averageDisp.z << "," << nodes.size() << std::endl;
+    
+    
+//    if (std::isnan(TotalDistance))
+//        std::cout << averageDisp.x << ","<< averageDisp.y << ","<< averageDisp.z << "," << nodes.size() << std::endl;
 }
 
 void SoftBodyAgent::addSpring(std::size_t node1, std::size_t node2)
@@ -147,25 +158,41 @@ void SoftBodyAgent::RemoveNode(std::size_t node)
     {
         springs.erase(springs.begin() + nodes[node].springs[i]);
     }
+    nodes.erase(nodes.begin()+node);
+    initialPositions.erase(initialPositions.begin() + node);
+}
+
+void SoftBodyAgent::AddNode(SoftBodyNode node)
+{
+    const int numConnections = 3;
+    std::vector<std::pair<size_t, SoftBodyNode>> nodesSorted;
+    nodesSorted.reserve(nodes.size());
+    for (int i =0; i<nodes.size();++i) nodesSorted.push_back(std::pair<size_t, SoftBodyNode>(i, nodes[i]));
+    std::sort(nodesSorted.begin(), nodesSorted.end(), [&node](std::pair<size_t, SoftBodyNode>& node1, std::pair<size_t, SoftBodyNode>& node2)->bool {
+        return glm::length2(node1.second.Position-node.Position)<glm::length2(node2.second.Position-node.Position);
+    });
+    size_t nodeIndex=nodes.size();
+    nodes.push_back(node);
+    for (int i = 0; i<numConnections;++i)
+    {
+        springs.push_back(Spring(nodesSorted[i].first, nodeIndex,nodes));
+    }
+    initialPositions.push_back(node.Position);
 }
 
 void SoftBodyAgent::mutateGeometry()
 {
     for (auto& pos : initialPositions)
     {
-        pos.x+=RandomUtils::Normal(0.0f, 0.001f);
-        pos.y+=RandomUtils::Normal(0.0f, 0.001f);
-        pos.z+=RandomUtils::Normal(0.0f, 0.001f);
-        if (pos.z<0.01f)pos.z=0.01f;
+        pos.x+=RandomUtils::Normal(0.0f, GeometryMutationFactor);
+        pos.y+=RandomUtils::Normal(0.0f, GeometryMutationFactor);
+        pos.z+=RandomUtils::Normal(0.0f, GeometryMutationFactor);
+        if (pos.z<0.01f)pos.z=0.001f;
     }
 }
 
 void SoftBodyAgent::Mutate()
 {
-    const float extensionAmountVariance = 0.3;
-    const float extensionPeriodVariance = 0.01;
-    const float extensionLengthVariance = 0.1;
-    const float extensionOffsetVariance = 0.1;
 //    for (auto& pos : initialPositions)
 //    {
 //        pos.x+=RandomUtils::Instance.Normal<float>(0, 0.01);
@@ -174,21 +201,29 @@ void SoftBodyAgent::Mutate()
 //        if (pos.z < 0.01) pos.z = 0.01;
 ////
 //    }
-//    for (int i = 0; i<nodes.size();++i)
-//    {
-//        if (RandomUtils::UniformFloat() < 0.001)
-//            RemoveNode(i);
-//    }
+    for (int i = 0; i<nodes.size();++i)
+    {
+        if (RandomUtils::UniformFloat() < RemoveNodeProbability)
+            RemoveNode(i);
+        if (RandomUtils::UniformFloat() < AddNodeProbability)
+        {
+            const float maxDist = 0.3;
+            SoftBodyNode node =SoftBodyNode(StartingPos + glm::vec3(RandomUtils::Uniform(-maxDist,maxDist),RandomUtils::Uniform(-maxDist,maxDist),RandomUtils::Uniform(-maxDist,maxDist)));
+            if (node.Position.z<0.001) node.Position.z=0.001;
+            AddNode(node);
+        }
+    }
+    
     
     for (Spring& spring : springs)
     {
-        spring.ExtensionAmount+=RandomUtils::Normal<float>(0, extensionAmountVariance);
-        float extensionAmountMax=spring.EquilibriumDist*20;
+        spring.ExtensionAmount+=RandomUtils::Normal<float>(0, ExtensionAmountVariance);
+        float extensionAmountMax=spring.EquilibriumDist*ExtensionAmountMaxMult;
         if (spring.ExtensionAmount>extensionAmountMax) spring.ExtensionAmount=extensionAmountMax;
         else if (spring.ExtensionAmount<-extensionAmountMax) spring.ExtensionAmount=-extensionAmountMax;
 //        spring.EquilibriumDist+=RandomUtils::Instance.Normal<float>(0, 0.1);
-        spring.ExtensionLength+=RandomUtils::Normal<float>(0, extensionLengthVariance);
-        spring.ExtensionOffset+=RandomUtils::Normal<float>(0, extensionOffsetVariance);
+        spring.ExtensionLength+=RandomUtils::Normal<float>(0, ExtensionLengthVariance);
+        spring.ExtensionOffset+=RandomUtils::Normal<float>(0, ExtensionOffsetVariance);
         spring.ExtensionLength%=spring.ExtensionPeriod;
         spring.ExtensionOffset%=spring.ExtensionPeriod;
         color.x+=RandomUtils::Normal<float>(0.f, 0.05f);
@@ -198,7 +233,7 @@ void SoftBodyAgent::Mutate()
         color.z+=RandomUtils::Normal<float>(0.f, 0.05f);
         color.x = std::abs(color.z);
         color = glm::normalize(color);
-//        spring.ExtensionPeriod+=RandomUtils::Normal<float>(0, extensionPeriodVariance);
-//        if (spring.ExtensionPeriod<1)spring.ExtensionPeriod=1;
+        spring.ExtensionPeriod+=RandomUtils::Normal<float>(0, ExtensionPeriodVariance);
+        if (spring.ExtensionPeriod<1)spring.ExtensionPeriod=1;
     }
 }

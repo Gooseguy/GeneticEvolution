@@ -19,6 +19,7 @@ ConfigurationManager::ConfigurationManager(const std::string& fileName) : SEPARA
         auto charPos = line.find(SEPARATOR_CHAR);
         std::string name = line.substr(2, charPos-2);
         std::string valueStr = line.substr(charPos+1);
+        std::transform(valueStr.begin(),valueStr.end(), valueStr.begin(), ::tolower);
         char itemType = line[0];
         switch (itemType)
         {
@@ -27,6 +28,9 @@ ConfigurationManager::ConfigurationManager(const std::string& fileName) : SEPARA
                 break;
             case 'I':
                 intItems[name] = std::atoi(valueStr.c_str());
+                break;
+            case 'B':
+                boolItems[name] = valueStr=="true";
                 break;
         }
         
@@ -59,4 +63,16 @@ template<>
 void ConfigurationManager::SetItem<int>(const std::string& name, int value)
 {
     intItems[name]=value;
+}
+template<>
+bool ConfigurationManager::GetItem<bool>(const std::string& name)
+{
+    if (boolItems.find(name)==boolItems.end()) throw std::out_of_range("Item not part of configuration.");
+    return boolItems[name];
+}
+
+template<>
+void ConfigurationManager::SetItem<bool>(const std::string& name, bool value)
+{
+    boolItems[name]=value;
 }

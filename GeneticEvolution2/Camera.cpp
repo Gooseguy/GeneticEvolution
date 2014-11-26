@@ -10,8 +10,9 @@
 #include <SDL2/SDL.h>
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtx/quaternion.hpp"
-Camera::Camera(int windowWidth, int windowHeight) :
-FieldOfView(50),
+#include "ConfigurationManager.h"
+Camera::Camera(int windowWidth, int windowHeight, ConfigurationManager& configManager) :
+FieldOfView(configManager.GetItem<float>("FieldOfView")),
 aspectRatio((float)windowWidth/windowHeight),
 NEAR_PLANE(0.000001),
 FAR_PLANE(100),
@@ -19,6 +20,7 @@ rotationQuat(0,0,0, 1),
 rotationX(0),
 rotationZ(0),
 position(1,0.1,1)
+
 {
     
 }

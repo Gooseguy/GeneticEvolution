@@ -8,7 +8,7 @@
 
 #include "Wall.h"
 
-const float Wall::FORCE_MULT = 10000.0f;
+const float Wall::FORCE_MULT = 10000.f;
 
 Wall::Wall(glm::vec3 origin, glm::vec3 normal, float frictionConstant) : Origin(origin), Normal(normal), FrictionConstant(frictionConstant), gridSquareLength(0.05)
 {
