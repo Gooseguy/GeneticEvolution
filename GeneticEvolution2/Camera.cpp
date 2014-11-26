@@ -19,14 +19,14 @@ FAR_PLANE(100),
 rotationQuat(0,0,0, 1),
 rotationX(0),
 rotationZ(0),
-position(1,0.1,1)
+position(1,0.1,-0.4)
 
 {
     
 }
 glm::mat4 Camera::GetTransformMatrix()
 {
-    return GetProjectionMatrix() * glm::mat4_cast(rotationQuat) * glm::translate(glm::mat4(), position) * glm::scale(glm::mat4(), glm::vec3(1,1,-1));
+    return GetProjectionMatrix() * glm::mat4_cast(rotationQuat) * glm::translate(glm::mat4(), position);
 }
 glm::mat4 Camera::GetProjectionMatrix()
 {
