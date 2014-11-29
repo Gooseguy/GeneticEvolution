@@ -31,7 +31,20 @@ MainGame::MainGame()
     }
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
     SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
-    window = SDL_CreateWindow("Genetic Algorithm", 0, 0, configManager.GetItem<float>("WindowWidth"), configManager.GetItem<float>("WindowHeight"), SDL_WINDOW_OPENGL);
+    
+    SDL_DisplayMode mode; SDL_GetCurrentDisplayMode(0, &mode);
+    
+    
+    Uint32 windowFlags = SDL_WINDOW_OPENGL;
+    size_t width = configManager.GetItem<float>("WindowWidth"), height = configManager.GetItem<float>("WindowHeight");
+    if (configManager.GetItem<bool>("Fullscreen"))
+    {
+//        width = mode.w; height = mode.h;
+        windowFlags|=SDL_WINDOW_FULLSCREEN_DESKTOP;
+    }
+    
+    
+    window = SDL_CreateWindow("Genetic Algorithm", 0, 0, width, height, windowFlags);
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetSwapInterval(1);
     SDL_SetRelativeMouseMode(SDL_TRUE);
@@ -105,6 +118,8 @@ void MainGame::HandleEvents(EvolutionSystem& evolutionSystem, Camera& camera)
                 case SDL_SCANCODE_G:
                     evolutionSystem.DecreasePlaybackRate();
                     break;
+                case SDL_SCANCODE_P:
+                    evolutionSystem.SaveSelectedAgent();
                 default:
                     break;
             }
@@ -112,6 +127,7 @@ void MainGame::HandleEvents(EvolutionSystem& evolutionSystem, Camera& camera)
             case SDL_MOUSEBUTTONDOWN:
                 evolutionSystem.SelectClosestAgent(camera.GetPosition());
                 break;
+            default: break;
         }
         
     }

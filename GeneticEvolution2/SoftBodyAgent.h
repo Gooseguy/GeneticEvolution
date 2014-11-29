@@ -16,7 +16,8 @@ class SoftBodyAgent
 {
 public:
     SoftBodyAgent(glm::vec3 pos, glm::vec3 color);
-    SoftBodyAgent(const SoftBodyAgent& agent);
+    SoftBodyAgent(const SoftBodyAgent& agent, bool mutate);
+    SoftBodyAgent(const std::string& fileName);
     ~SoftBodyAgent();
     static int INITIAL_CUBE_WIDTH;
     static float NODE_SPACING;
@@ -46,6 +47,7 @@ public:
     static float AddNodeProbability;
     
     inline glm::vec3 GetPosition();
+    void SaveToFile(const std::string& fileName);
     
 private:
     void mutateGeometry();
@@ -53,6 +55,7 @@ private:
     void addSpring(std::size_t node1, std::size_t node2);
     inline void addSpringDisplacement(int x, int y, int z);
     void getSize();
+    void removeSpring(size_t i);
 };
 
 glm::vec3 SoftBodyAgent::GetPosition()

@@ -32,6 +32,9 @@ ConfigurationManager::ConfigurationManager(const std::string& fileName) : SEPARA
             case 'B':
                 boolItems[name] = valueStr=="true";
                 break;
+            case 'S':
+                stringItems[name] = valueStr;
+                break;
         }
         
     }
@@ -75,4 +78,17 @@ template<>
 void ConfigurationManager::SetItem<bool>(const std::string& name, bool value)
 {
     boolItems[name]=value;
+}
+
+template<>
+std::string ConfigurationManager::GetItem<std::string>(const std::string& name)
+{
+    if (stringItems.find(name)==stringItems.end()) throw std::out_of_range("Item not part of configuration.");
+    return stringItems[name];
+}
+
+template<>
+void ConfigurationManager::SetItem<std::string>(const std::string& name, std::string value)
+{
+    stringItems[name]=value;
 }

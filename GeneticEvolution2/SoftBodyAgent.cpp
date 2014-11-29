@@ -11,6 +11,8 @@
 #include "glm/gtx/euler_angles.hpp"
 #include "RandomUtils.h"
 #include "Spring.h"
+#include <fstream>
+#include <sstream>
 float SoftBodyAgent::NODE_SPACING = 0.05f;
 int SoftBodyAgent::INITIAL_CUBE_WIDTH=3;
 float SoftBodyAgent::ExtensionAmountVariance = 0.05f;
@@ -64,19 +66,19 @@ SoftBodyAgent::SoftBodyAgent(glm::vec3 pos, glm::vec3 _color) : TotalMinimumHeig
     
 }
 
-SoftBodyAgent::SoftBodyAgent(const SoftBodyAgent& agent) :
+SoftBodyAgent::SoftBodyAgent(const SoftBodyAgent& agent, bool mutate) :
 initialPositions(agent.initialPositions),
 TotalMinimumHeight(0),
 color(agent.color)
 {
-    mutateGeometry();
+    if (mutate) mutateGeometry();
     for (int i = 0; i<agent.nodes.size();++i)
     {
         nodes.push_back(SoftBodyNode(initialPositions[i]));
     }
     for (auto& spring : agent.springs)
         springs.push_back(Spring(spring, nodes));
-    Mutate();
+    if (mutate) Mutate();
     getSize();
     
 }
@@ -153,13 +155,33 @@ void SoftBodyAgent::addSpring(std::size_t node1, std::size_t node2)
     nodes[node2].AddSpring(idx);
 }
 
+void SoftBodyAgent::removeSpring(size_t i)
+{
+    nodes[springs[i].obj1].springsUsed--;
+    nodes[springs[i].obj2].springsUsed--;
+    for (auto& node : nodes)
+    {
+        for (int j = 0; j< node.GetSpringsUsed();++j)
+        {
+            if (node.springs[j]>i)j--;
+        }
+    }
+    springs.erase(springs.begin() + i);
+}
+
 void SoftBodyAgent::RemoveNode(std::size_t node)
 {
-    for (int i = 0; i<nodes[node].GetSpringsUsed();++i)
+    if (nodes.size() <= 1) throw std::out_of_range("cannot remove node");
+    for (size_t i = 0; i<nodes[node].GetSpringsUsed();++i)
     {
-        springs.erase(springs.begin() + nodes[node].springs[i]);
+        removeSpring(i);
     }
     nodes.erase(nodes.begin()+node);
+    for (auto& spring : springs)
+    {
+        if (spring.obj1>node) spring.obj1--;
+        if (spring.obj2>node) spring.obj2--;
+    }
     initialPositions.erase(initialPositions.begin() + node);
 }
 
@@ -208,7 +230,7 @@ void SoftBodyAgent::Mutate()
             RemoveNode(i);
         if (RandomUtils::UniformFloat() < AddNodeProbability)
         {
-            const float maxDist = 0.3;
+            const float maxDist = 0.05;
             SoftBodyNode node =SoftBodyNode(StartingPos + glm::vec3(RandomUtils::Uniform(-maxDist,maxDist),RandomUtils::Uniform(-maxDist,maxDist),RandomUtils::Uniform(-maxDist,maxDist)));
             if (node.Position.z<0.001) node.Position.z=0.001;
             AddNode(node);
@@ -237,4 +259,72 @@ void SoftBodyAgent::Mutate()
         spring.ExtensionPeriod+=RandomUtils::Normal<float>(0, ExtensionPeriodVariance);
         if (spring.ExtensionPeriod<1)spring.ExtensionPeriod=1;
     }
+}
+
+void SoftBodyAgent::SaveToFile(const std::string &fileName)
+{
+    std::ofstream stream(fileName, std::ios::out);
+    for (auto& vec : initialPositions)
+        stream << vec.x << "," << vec.y << "," << vec.z << "," << std::endl;
+    stream << std::endl;
+    stream << color.x << "," << color.y << "," << color.z << std::endl;
+    stream << std::endl;
+    for (auto& spring : springs)
+        stream << spring.obj1 << "," << spring.obj2 << "," << spring.EquilibriumDist << "," << spring.ExtensionAmount << "," << spring.ExtensionLength << "," << spring.ExtensionOffset << "," << spring.ExtensionPeriod << std::endl;
+    
+}
+
+SoftBodyAgent::SoftBodyAgent(const std::string& fileName)
+{
+    std::ifstream stream(fileName, std::ios::in);
+    std::string line;
+    while (std::getline(stream, line))
+    {
+        if (line=="") break;
+        std::stringstream sstream(line, std::ios::in);
+        
+        std::string x,y,z;
+        std::getline(sstream, x, ',');
+        std::getline(sstream, y, ',');
+        std::getline(sstream, z, ',');
+        glm::vec3 pos(atof(x.c_str()), atof(y.c_str()), atof(z.c_str()));
+        initialPositions.push_back(pos);
+    }
+    std::getline(stream, line);
+    {
+        std::getline(stream, line);
+        std::stringstream sstream(line, std::ios::in);
+        
+        std::string x,y,z;
+        std::getline(sstream, x, ',');
+        std::getline(sstream, y, ',');
+        std::getline(sstream, z, ',');
+        color = glm::vec3(atof(x.c_str()), atof(y.c_str()), atof(z.c_str()));
+    }
+    for (auto& pos : initialPositions) nodes.push_back(SoftBodyNode(pos));
+    
+    while (std::getline(stream, line))
+    {
+        if (line=="") break;
+        
+        std::stringstream sstream(line, std::ios::in);
+        
+        std::string obj1, obj2, eqdist, examount, exlen, exoff, exper;
+        std::getline(sstream, obj1, ',');
+        std::getline(sstream, obj2, ',');
+        std::getline(sstream, eqdist, ',');
+        std::getline(sstream, examount, ',');
+        std::getline(sstream, exlen, ',');
+        std::getline(sstream, exoff, ',');
+        std::getline(sstream, exper, ',');
+        
+        Spring spring(atoi(obj1.c_str()), atoi(obj2.c_str()), nodes);
+        spring.EquilibriumDist = atof(eqdist.c_str());
+        spring.ExtensionAmount = atof(examount.c_str());
+        spring.ExtensionLength = atof(exlen.c_str());
+        spring.ExtensionOffset = atof(exoff.c_str());
+        spring.ExtensionPeriod = atof(exper.c_str());
+        springs.push_back(spring);
+    }
+    getSize();
 }

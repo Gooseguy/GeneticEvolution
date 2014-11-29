@@ -23,6 +23,7 @@
 		AA2BEFAA1A196585006186EB /* glm in Resources */ = {isa = PBXBuildFile; fileRef = AA2BEFA71A196585006186EB /* glm */; };
 		AA2BEFAB1A196585006186EB /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AA2BEFA91A196585006186EB /* main.cpp */; };
 		AA2BEFAE1A1965C9006186EB /* ResourcePath.mm in Sources */ = {isa = PBXBuildFile; fileRef = AA2BEFAD1A1965C9006186EB /* ResourcePath.mm */; };
+		AAA0D9711A29676000E22303 /* README.txt in Resources */ = {isa = PBXBuildFile; fileRef = AAA0D9701A29676000E22303 /* README.txt */; };
 		CA46E7351A238C5A00D24E85 /* ConfigurationManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA46E7331A238C5A00D24E85 /* ConfigurationManager.cpp */; };
 		CA46E7371A2394B600D24E85 /* configuration.txt in Resources */ = {isa = PBXBuildFile; fileRef = CA46E7361A2394B600D24E85 /* configuration.txt */; };
 		CA64B88B1A1FAFA100649368 /* Wall.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA64B8891A1FAFA100649368 /* Wall.cpp */; };
@@ -59,6 +60,7 @@
 		AA2BEFA91A196585006186EB /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		AA2BEFAC1A1965C9006186EB /* ResourcePath.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ResourcePath.hpp; sourceTree = "<group>"; };
 		AA2BEFAD1A1965C9006186EB /* ResourcePath.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ResourcePath.mm; sourceTree = "<group>"; };
+		AAA0D9701A29676000E22303 /* README.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.txt; sourceTree = "<group>"; };
 		CA46E7331A238C5A00D24E85 /* ConfigurationManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ConfigurationManager.cpp; sourceTree = "<group>"; };
 		CA46E7341A238C5A00D24E85 /* ConfigurationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConfigurationManager.h; sourceTree = "<group>"; };
 		CA46E7361A2394B600D24E85 /* configuration.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = configuration.txt; sourceTree = "<group>"; };
@@ -144,6 +146,7 @@
 				CA64B88D1A1FF68100649368 /* Vertex.h */,
 				CA46E7331A238C5A00D24E85 /* ConfigurationManager.cpp */,
 				CA46E7341A238C5A00D24E85 /* ConfigurationManager.h */,
+				AAA0D9701A29676000E22303 /* README.txt */,
 			);
 			path = GeneticEvolution2;
 			sourceTree = "<group>";
@@ -226,6 +229,7 @@
 				CA46E7371A2394B600D24E85 /* configuration.txt in Resources */,
 				AA2BEFA61A19657C006186EB /* GeneticEvolution.1 in Resources */,
 				AA2BEF871A1963BC006186EB /* fragmentShader.glsl in Resources */,
+				AAA0D9711A29676000E22303 /* README.txt in Resources */,
 				AA2BEFAA1A196585006186EB /* glm in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

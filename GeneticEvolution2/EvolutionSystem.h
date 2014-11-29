@@ -45,6 +45,7 @@ public:
     inline void IncreasePlaybackRate();
     inline void DecreasePlaybackRate();
     void SelectClosestAgent(glm::vec3 ref);
+    void SaveSelectedAgent();
 private:
     GLuint vao,vbo,ibo;
     void generateBuffers();
@@ -64,9 +65,13 @@ private:
     void updateAgent(size_t start, size_t end);
     std::vector<Wall> walls;
     float updateTime;
+    std::string agentOutputFilename;
+    
+    float prevMaximumPerformance;
     
     unsigned int playbackRate;
 };
+
 
 void EvolutionSystem::IncreasePlaybackRate()
 {
@@ -103,6 +108,8 @@ void EvolutionSystem::NextRenderMode()
             break;
         case RenderMode::SOLID_ONE:
             CurrentRenderMode=RenderMode::POINT_ALL;
+            break;
+        default:
             break;
     //Not including "SOLID_ALL" because it is too slow.
 //        case RenderMode::SOLID_ALL:

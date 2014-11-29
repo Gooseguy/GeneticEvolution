@@ -1,10 +1,11 @@
 F WindowWidth:1280
 F WindowHeight:720
 B DepthTesting:true
+B Fullscreen:false
 B Multisampling:true
 I MultisampleBuffers:4
 I MultisampleSamples:8
-I NumAgents:50
+I NumAgents:32
 I AgentCubeWidth:2
 F AgentNodeSpacing:0.05f
 F TimeStep:0.0005
@@ -19,8 +20,10 @@ F ExtensionOffsetVariance:0.05
 F ExtensionAmountMaxMult:5.
 F DragCoefficient:0.01
 F NewAgentProbability:0.01
-F GeometryMutationFactor:0.005
+F GeometryMutationFactor:0.0075
 F RenderColorMult:0.0001
 F DefaultNodeMass:1.
-F RemoveNodeProbability:0.00
+F RemoveNodeProbability:0.01
 F AddNodeProbability:0.01
+S AgentOutputFilename:agent.txt
+B UseAgentOutputFile:false

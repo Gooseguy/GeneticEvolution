@@ -13,8 +13,8 @@
 #include "glm/gtx/rotate_vector.hpp"
 #include <iostream>
 #include <chrono>
-
-
+#include <ctime>
+#include "ResourcePath.hpp"
 
 EvolutionSystem::EvolutionSystem(std::string _outputFileLocation, ConfigurationManager& configManager, int numCores) :
 NUM_CORES(numCores),
@@ -30,9 +30,12 @@ GRAVITATIONAL_ACCELERATION(configManager.GetItem<float>("GravitationalAccelerati
 DRAG_COEFFICIENT(configManager.GetItem<float>("DragCoefficient")),
 NEW_AGENT_PROBABILITY(configManager.GetItem<float>("NewAgentProbability")),
 playbackRate(50),
-walls{Wall(glm::vec3(0,-0.5f,0),glm::rotate(glm::vec3(0,0,1), 0.0f, glm::vec3(1,0,0)),0.9f)}
+walls{Wall(glm::vec3(0,0,0),glm::rotate(glm::vec3(0,0,1), 0.0f, glm::vec3(1,0,0)),0.9f)},
+prevMaximumPerformance(100)
 //Wall(glm::vec3(0,0.5f,-0.3),glm::rotate(glm::vec3(0,0,1), -10.0f, glm::vec3(1,0,0)),0.9f)}
 {
+    agentOutputFilename = configManager.GetItem<std::string>("AgentOutputFilename");
+    
     SoftBodyAgent::INITIAL_CUBE_WIDTH = configManager.GetItem<int>("AgentCubeWidth");
     SoftBodyAgent::NODE_SPACING = configManager.GetItem<float>("AgentNodeSpacing");
     Spring::DefaultSpringConstant = configManager.GetItem<float>("DefaultSpringConstant");
@@ -57,7 +60,12 @@ walls{Wall(glm::vec3(0,-0.5f,0),glm::rotate(glm::vec3(0,0,1), 0.0f, glm::vec3(1,
     
     configurePerformanceFunctions();
     for (int i = 0; i<NUM_AGENTS;++i)
-        agents.push_back(new SoftBodyAgent(glm::vec3(0,0,0.01), glm::vec3(RandomUtils::UniformFloat(),RandomUtils::UniformFloat(),RandomUtils::UniformFloat())));
+    {
+        if (configManager.GetItem<bool>("UseAgentOutputFile"))
+            agents.push_back(new SoftBodyAgent(resourcePath() + agentOutputFilename));
+        else
+            agents.push_back(new SoftBodyAgent(glm::vec3(0,0,0.01), glm::vec3(RandomUtils::UniformFloat(),RandomUtils::UniformFloat(),RandomUtils::UniformFloat())));
+    }
     generateBuffers();
     updateBuffers();
 }
@@ -315,15 +323,14 @@ void EvolutionSystem::Update()
     else
     {
         auto t = std::chrono::high_resolution_clock::now();
-        std::vector<std::thread> threads;
-        threads.reserve(NUM_CORES);
+        std::vector<std::thread> threads(NUM_CORES);
         for (int i = 0; i<NUM_CORES;++i)
         {
             size_t inc = agents.size()/NUM_CORES;
             size_t start = i*inc;
             size_t end = (i+1)*inc-1;
             if (end > agents.size()) end = agents.size();
-            threads.push_back(std::thread(&EvolutionSystem::updateAgent, this, start, end));
+            threads.at(i) = std::thread(&EvolutionSystem::updateAgent, this, start,end);
         }
         
         currentTime+=generationLength;
@@ -345,7 +352,7 @@ void EvolutionSystem::nextGeneration()
     for (int i = 0; i<agents.size();++i)
     {
         float perf = performanceFunctions[currentFunction](*agents[i]);
-        if (!std::isnan(perf) && perf<1e10f)
+        if (!std::isnan(perf) && perf<1e10f && perf > 0 && perf < prevMaximumPerformance * 100)
             probabilities[i] = perf;
         else probabilities[i] = 0;
         averageEnergy+=agents[i]->TotalEnergy/generationLength;
@@ -354,9 +361,10 @@ void EvolutionSystem::nextGeneration()
     avgNumNodes/=agents.size();
     averageEnergy/=agents.size();
     float max = 0;
-    for(auto& p : probabilities) {
-        average+=p;
-        if (p>max) max = p;
+    size_t maxAgent;
+    for(size_t i = 0; i<probabilities.size();++i) {
+        average+=probabilities[i];
+        if (probabilities[i]>max) { max = probabilities[i]; maxAgent = i; }
     }
     average/=probabilities.size();
     
@@ -374,22 +382,23 @@ void EvolutionSystem::nextGeneration()
         {
             int index =(int)distribution(RandomUtils::rand);
             if (index > agents.size()-1) index = agents.size()-1;
-            newAgents[i] = new SoftBodyAgent(*agents[index]);
+            newAgents[i] = new SoftBodyAgent(*agents[index], i==maxAgent ? (RandomUtils::UniformFloat()<0.8f) : true);
         }
     }
 
     for (auto& agent : agents) delete agent;
     agents = newAgents;
     if (accelerateNextRound) { accelerate=true; accelerateNextRound=false; }
+    prevMaximumPerformance = max;
     
 }
 
 void EvolutionSystem::configurePerformanceFunctions()
 {
     performanceFunctions.push_back(std::function<float(SoftBodyAgent&)>([this](SoftBodyAgent& agent) {
-        return agent.TotalDistance;
+        return pow(agent.TotalDistance,1.5f);
     }));performanceFunctions.push_back(std::function<float(SoftBodyAgent&)>([this](SoftBodyAgent& agent) {
-        return (agent.TotalMinimumHeight)/(agent.Size*generationLength+0.001);
+        return (agent.TotalMinimumHeight);
     }));
 }
 
@@ -405,4 +414,13 @@ void EvolutionSystem::SelectClosestAgent(glm::vec3 ref)
             closestDist2=dist2;
         }
     }
+}
+
+        
+void EvolutionSystem::SaveSelectedAgent()
+{
+//    std::time_t time = std::time(nullptr);
+//    struct tm* time_now = std::localtime(&time);
+//    std::string fileName = std::to_string(time_now->tm_year) + " " + std::to_string(time_now->tm_mon) + " " + std::to_string(time_now->tm_wday) + " " + std::to_string(time_now->tm_hour) + " " + std::to_string(time_now->tm_min) + " " + std::to_string(time_now->tm_sec);
+    agents[selectedAgent]->SaveToFile(resourcePath() + agentOutputFilename);
 }
