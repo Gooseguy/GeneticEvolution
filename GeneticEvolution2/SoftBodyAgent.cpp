@@ -171,7 +171,7 @@ void SoftBodyAgent::removeSpring(size_t i)
 
 void SoftBodyAgent::RemoveNode(std::size_t node)
 {
-    if (nodes.size() <= 1) throw std::out_of_range("cannot remove node");
+    if (nodes.size() <= 1) return;
     for (size_t i = 0; i<nodes[node].GetSpringsUsed();++i)
     {
         removeSpring(i);
@@ -184,10 +184,10 @@ void SoftBodyAgent::RemoveNode(std::size_t node)
     }
     initialPositions.erase(initialPositions.begin() + node);
 }
-
+//TODO: Fix this function.  It can lead to access violations. 
 void SoftBodyAgent::AddNode(SoftBodyNode node)
 {
-    const int numConnections = 3;
+    const int numConnections = 4;
     std::vector<std::pair<size_t, SoftBodyNode>> nodesSorted;
     nodesSorted.reserve(nodes.size());
     for (int i =0; i<nodes.size();++i) nodesSorted.push_back(std::pair<size_t, SoftBodyNode>(i, nodes[i]));
@@ -231,7 +231,7 @@ void SoftBodyAgent::Mutate()
         if (RandomUtils::UniformFloat() < AddNodeProbability)
         {
             const float maxDist = 0.05;
-            SoftBodyNode node =SoftBodyNode(StartingPos + glm::vec3(RandomUtils::Uniform(-maxDist,maxDist),RandomUtils::Uniform(-maxDist,maxDist),RandomUtils::Uniform(-maxDist,maxDist)));
+            SoftBodyNode node =SoftBodyNode(nodes[nodes.size() * RandomUtils::UniformFloat()].Position + glm::vec3(RandomUtils::Uniform(-maxDist,maxDist),RandomUtils::Uniform(-maxDist,maxDist),RandomUtils::Uniform(-maxDist,maxDist)));
             if (node.Position.z<0.001) node.Position.z=0.001;
             AddNode(node);
         }

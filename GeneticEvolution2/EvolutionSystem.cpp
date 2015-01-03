@@ -20,6 +20,7 @@ EvolutionSystem::EvolutionSystem(std::string _outputFileLocation, ConfigurationM
 NUM_CORES(numCores),
 NUM_AGENTS(configManager.GetItem<int>("NumAgents")),
 TIME_STEP(configManager.GetItem<float>("TimeStep")),
+USE_MULTITHREADING(configManager.GetItem<bool>("UseMultithreading")),
 CurrentRenderMode(RenderMode::POINT_ALL),
 generationLength(configManager.GetItem<float>("GenerationLength")/TIME_STEP),
 outputFileLocation(_outputFileLocation),
@@ -30,7 +31,7 @@ GRAVITATIONAL_ACCELERATION(configManager.GetItem<float>("GravitationalAccelerati
 DRAG_COEFFICIENT(configManager.GetItem<float>("DragCoefficient")),
 NEW_AGENT_PROBABILITY(configManager.GetItem<float>("NewAgentProbability")),
 playbackRate(50),
-walls{Wall(glm::vec3(0,0,0),glm::rotate(glm::vec3(0,0,1), 0.0f, glm::vec3(1,0,0)),0.9f)},
+walls{Wall(glm::vec3(0,0,0),glm::rotate(glm::vec3(0,0,1), 0.0f, glm::vec3(1,0,0)),1.1f)},
 prevMaximumPerformance(100)
 //Wall(glm::vec3(0,0.5f,-0.3),glm::rotate(glm::vec3(0,0,1), -10.0f, glm::vec3(1,0,0)),0.9f)}
 {
@@ -322,19 +323,25 @@ void EvolutionSystem::Update()
     }
     else
     {
-        auto t = std::chrono::high_resolution_clock::now();
-        std::vector<std::thread> threads(NUM_CORES);
-        for (int i = 0; i<NUM_CORES;++i)
+            auto t = std::chrono::high_resolution_clock::now();
+        if (USE_MULTITHREADING)
         {
-            size_t inc = agents.size()/NUM_CORES;
-            size_t start = i*inc;
-            size_t end = (i+1)*inc-1;
-            if (end > agents.size()) end = agents.size();
-            threads.at(i) = std::thread(&EvolutionSystem::updateAgent, this, start,end);
+            for (int i = 0; i<NUM_CORES;++i)
+            {
+                size_t inc = agents.size()/NUM_CORES;
+                size_t start = i*inc;
+                size_t end = (i+1)*inc-1;
+                if (end > agents.size()) end = agents.size();
+                delete threads.at(i);
+                threads.at(i) = new std::thread(&EvolutionSystem::updateAgent, this, start,end);
+            }
+            for (auto& thread : threads) thread->join();
+            
         }
+        else
+            updateAgent(0, NUM_AGENTS);
         
         currentTime+=generationLength;
-        for (auto& thread : threads) thread.join();
         
         updateTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - t).count();
         nextGeneration();
@@ -344,7 +351,8 @@ void EvolutionSystem::Update()
 void EvolutionSystem::nextGeneration()
 {
     std::ofstream stream(outputFileLocation, std::ios::out | std::ios::app);
-    std::vector<float> intervals(agents.size(), 1.0);
+    std::vector<float> intervals(agents.size());
+    for (int i = 0; i<intervals.size();i++) intervals[i]=i;
     std::vector<float> probabilities(agents.size());
     float average=0;
     float averageEnergy=0;
@@ -396,7 +404,7 @@ void EvolutionSystem::nextGeneration()
 void EvolutionSystem::configurePerformanceFunctions()
 {
     performanceFunctions.push_back(std::function<float(SoftBodyAgent&)>([this](SoftBodyAgent& agent) {
-        return pow(agent.TotalDistance,1.5f);
+        return agent.TotalDistance;
     }));performanceFunctions.push_back(std::function<float(SoftBodyAgent&)>([this](SoftBodyAgent& agent) {
         return (agent.TotalMinimumHeight);
     }));

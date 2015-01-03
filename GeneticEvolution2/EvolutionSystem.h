@@ -14,6 +14,7 @@
 #include "SoftBodyAgent.h"
 #include "Wall.h"
 #include "ConfigurationManager.h"
+#include<thread>
 
 class EvolutionSystem
 {
@@ -38,6 +39,7 @@ public:
     const float GRAVITATIONAL_ACCELERATION;
     const float DRAG_COEFFICIENT;
     const float NEW_AGENT_PROBABILITY;
+    const bool USE_MULTITHREADING;
     int selectedAgent;
     inline void NextSelectedAgent();
     inline void PrevSelectedAgent();
@@ -68,6 +70,7 @@ private:
     std::string agentOutputFilename;
     
     float prevMaximumPerformance;
+    std::vector<std::thread*> threads = std::vector<std::thread*>(NUM_CORES);
     
     unsigned int playbackRate;
 };
