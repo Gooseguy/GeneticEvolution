@@ -8,12 +8,12 @@ I MultisampleSamples:8
 I NumAgents:32
 I AgentCubeWidth:2
 F AgentNodeSpacing:0.05f
-F TimeStep:0.0005
+F TimeStep:0.0001
 F GenerationLength:15
 F GravitationalAcceleration:-1.0
-F DefaultSpringConstant:125.0
+F DefaultSpringConstant:100.0
 F FieldOfView:60
-F ExtensionAmountVariance:0.2
+F ExtensionAmountVariance:0.05
 F ExtensionPeriodVariance:0.0
 F ExtensionLengthVariance:0.1
 F ExtensionOffsetVariance:0.1

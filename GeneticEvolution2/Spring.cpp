@@ -25,7 +25,7 @@ Spring::Spring(const Spring& spring, std::vector<SoftBodyNode>& objects) : Sprin
     EquilibriumDist = glm::length(objects[spring.obj1].Position-objects[spring.obj2].Position);
 
 }
-void Spring::ApplyForces(int currentTime, std::vector<SoftBodyNode>& objects)
+void Spring::ApplyForces(float timeStep, int currentTime, std::vector<SoftBodyNode>& objects)
 {
     SoftBodyNode* o1 = &objects[obj1];
     SoftBodyNode* o2 = &objects[obj2];
@@ -39,7 +39,7 @@ void Spring::ApplyForces(int currentTime, std::vector<SoftBodyNode>& objects)
         diff-=ExtensionAmount;
         diff2-=ExtensionAmount;
     }
-    if (dist < 50 && dist>0.01 && dist2 < 50 && dist2 > 0.01)
+//    if (dist < 50 && dist>0.01 && dist2 < 50 && dist2 > 0.01)
     {
         o1->ApplyForce(-(diff* SpringConstant) * glm::normalize(disp),-(diff2* SpringConstant) * glm::normalize(disp2));
         o1->TotalStress+=std::abs(diff*SpringConstant);

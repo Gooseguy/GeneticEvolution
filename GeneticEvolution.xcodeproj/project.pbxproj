@@ -333,7 +333,7 @@
 					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = "GeneticEvolution2/GeneticEvolution-Info.plist";
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = GeneticEvolution;
 				SFML_BINARY_TYPE = "";
@@ -350,9 +350,9 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)",
 				);
-				GCC_OPTIMIZATION_LEVEL = fast;
+				GCC_OPTIMIZATION_LEVEL = 3;
 				INFOPLIST_FILE = "GeneticEvolution2/GeneticEvolution-Info.plist";
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = GeneticEvolution;
 				SFML_BINARY_TYPE = "";

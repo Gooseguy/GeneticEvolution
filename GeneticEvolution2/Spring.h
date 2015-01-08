@@ -17,7 +17,7 @@ public:
     Spring (const Spring& spring, std::vector<SoftBodyNode>& objects);
     std::size_t obj1;
     std::size_t obj2;
-    void ApplyForces(int currentTime, std::vector<SoftBodyNode>& objects);
+    void ApplyForces(float timeStep, int currentTime, std::vector<SoftBodyNode>& objects);
     float EquilibriumDist;
     static float DefaultSpringConstant;
     float SpringConstant;
@@ -38,6 +38,7 @@ bool Spring::IsExtending(int currentTime)
 
 float Spring::GetEnergy(std::vector<SoftBodyNode>& objects,int currentTime)
 {
-    float diff =glm::length2(objects[obj1].Position-objects[obj2].Position) - EquilibriumDist - IsExtending(currentTime)*ExtensionAmount;
+    float diff =glm::length(objects[obj1].Position-objects[obj2].Position) - (EquilibriumDist + (IsExtending(currentTime) ? ExtensionAmount : 0));
+    assert(!std::isnan(diff));
     return 0.5f * SpringConstant * diff * diff;
 }

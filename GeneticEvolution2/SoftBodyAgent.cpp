@@ -13,6 +13,7 @@
 #include "Spring.h"
 #include <fstream>
 #include <sstream>
+#include <algorithm>
 float SoftBodyAgent::NODE_SPACING = 0.05f;
 int SoftBodyAgent::INITIAL_CUBE_WIDTH=3;
 float SoftBodyAgent::ExtensionAmountVariance = 0.05f;
@@ -103,21 +104,22 @@ void SoftBodyAgent::Update(float timeStep, int currentTime)
     float potentialEnergy=0;
     for (auto& spring : springs)
     {
-        spring.ApplyForces(currentTime, nodes);
+        spring.ApplyForces(timeStep, currentTime, nodes);
         potentialEnergy+=spring.GetEnergy(nodes,currentTime);
+        assert(!std::isnan(potentialEnergy));
     }
     float kineticEnergy=0;
     for (auto& node : nodes)
     {
         node.Update(timeStep);
         kineticEnergy+=node.GetKineticEnergy();
+        assert(!std::isnan(kineticEnergy));
     }
-    kineticEnergy/=nodes.size();
-    potentialEnergy/=springs.size();
-//    assert(kineticEnergy+potentialEnergy>0);
+    
+    assert(kineticEnergy+potentialEnergy>0);
     TotalEnergy+=kineticEnergy;
     TotalEnergy+=potentialEnergy;
-//    assert(!std::isnan(TotalEnergy));
+    assert(!std::isnan(TotalEnergy));
     SoftBodyNode* lowestNode = nullptr;
     glm::vec3 averageDisp=glm::vec3();
 //    float averageHeight = 0;
@@ -171,7 +173,7 @@ void SoftBodyAgent::removeSpring(size_t i)
 
 void SoftBodyAgent::RemoveNode(std::size_t node)
 {
-    if (nodes.size() <= 1) return;
+    if (nodes.size() <= 4) return;
     for (size_t i = 0; i<nodes[node].GetSpringsUsed();++i)
     {
         removeSpring(i);
@@ -187,7 +189,7 @@ void SoftBodyAgent::RemoveNode(std::size_t node)
 //TODO: Fix this function.  It can lead to access violations. 
 void SoftBodyAgent::AddNode(SoftBodyNode node)
 {
-    const int numConnections = 4;
+    const size_t numConnections = 4;
     std::vector<std::pair<size_t, SoftBodyNode>> nodesSorted;
     nodesSorted.reserve(nodes.size());
     for (int i =0; i<nodes.size();++i) nodesSorted.push_back(std::pair<size_t, SoftBodyNode>(i, nodes[i]));
@@ -196,7 +198,7 @@ void SoftBodyAgent::AddNode(SoftBodyNode node)
     });
     size_t nodeIndex=nodes.size();
     nodes.push_back(node);
-    for (int i = 0; i<numConnections;++i)
+    for (int i = 0; i<std::min(numConnections,nodesSorted.size());++i)
     {
         springs.push_back(Spring(nodesSorted[i].first, nodeIndex,nodes));
     }

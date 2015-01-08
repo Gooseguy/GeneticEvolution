@@ -39,5 +39,6 @@ void PhysicsObject::ApplyForce(glm::vec3 force,glm::vec3 nextForce)
 
 float PhysicsObject::GetKineticEnergy()
 {
+    
     return 0.5f * Mass * glm::length2(Velocity);
 }
