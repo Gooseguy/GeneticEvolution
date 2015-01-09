@@ -27,8 +27,8 @@ Spring::Spring(const Spring& spring, std::vector<SoftBodyNode>& objects) : Sprin
 }
 void Spring::ApplyForces(float timeStep, int currentTime, std::vector<SoftBodyNode>& objects)
 {
-    SoftBodyNode* o1 = &objects[obj1];
-    SoftBodyNode* o2 = &objects[obj2];
+    SoftBodyNode* o1 = &objects.at(obj1);
+    SoftBodyNode* o2 = &objects.at(obj2);
     glm::vec3 disp = o1->Position - o2->Position;
     glm::vec3 disp2 = o1->Position + o1->Velocity - o2->Position - o2->Velocity;
     float dist = glm::length(disp);
@@ -39,7 +39,7 @@ void Spring::ApplyForces(float timeStep, int currentTime, std::vector<SoftBodyNo
         diff-=ExtensionAmount;
         diff2-=ExtensionAmount;
     }
-//    if (dist < 50 && dist>0.01 && dist2 < 50 && dist2 > 0.01)
+    if (dist>0.01 && dist2 > 0.01 && std::isfinite(dist) && std::isfinite(dist2))
     {
         o1->ApplyForce(-(diff* SpringConstant) * glm::normalize(disp),-(diff2* SpringConstant) * glm::normalize(disp2));
         o1->TotalStress+=std::abs(diff*SpringConstant);

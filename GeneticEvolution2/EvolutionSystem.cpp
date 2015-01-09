@@ -31,7 +31,7 @@ GRAVITATIONAL_ACCELERATION(configManager.GetItem<float>("GravitationalAccelerati
 DRAG_COEFFICIENT(configManager.GetItem<float>("DragCoefficient")),
 NEW_AGENT_PROBABILITY(configManager.GetItem<float>("NewAgentProbability")),
 playbackRate(50),
-walls{Wall(glm::vec3(0,0,0),glm::rotate(glm::vec3(0,0,1), 0.0f, glm::vec3(1,0,0)),0.7f)},
+walls{Wall(glm::vec3(0,0,0),glm::rotate(glm::vec3(0,0,1), 0.0f, glm::vec3(1,0,0)),0.3f)},
 prevMaximumPerformance(100)
 //Wall(glm::vec3(0,0.5f,-0.3),glm::rotate(glm::vec3(0,0,1), -10.0f, glm::vec3(1,0,0)),0.9f)}
 {
@@ -367,7 +367,7 @@ void EvolutionSystem::nextGeneration()
     }
     avgNumNodes/=agents.size();
     averageEnergy/=agents.size();
-    float max = 0;
+    float max = -1;
     size_t maxAgent;
     for(size_t i = 0; i<probabilities.size();++i) {
         average+=probabilities[i];
@@ -403,7 +403,7 @@ void EvolutionSystem::nextGeneration()
 void EvolutionSystem::configurePerformanceFunctions()
 {
     performanceFunctions.push_back(std::function<float(SoftBodyAgent&)>([this](SoftBodyAgent& agent) {
-        return agent.TotalDistance/agent.TotalEnergy;
+        return agent.TotalDistance;
     }));performanceFunctions.push_back(std::function<float(SoftBodyAgent&)>([this](SoftBodyAgent& agent) {
         return (agent.TotalMinimumHeight);
     }));

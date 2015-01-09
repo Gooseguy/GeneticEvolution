@@ -38,7 +38,9 @@ bool Spring::IsExtending(int currentTime)
 
 float Spring::GetEnergy(std::vector<SoftBodyNode>& objects,int currentTime)
 {
-    float diff =glm::length(objects[obj1].Position-objects[obj2].Position) - (EquilibriumDist + (IsExtending(currentTime) ? ExtensionAmount : 0));
-    assert(!std::isnan(diff));
+//    while (!std::isnan(d1))
+//           d1 = glm::length(objects[obj1].Position-objects[obj2].Position);
+    float diff = glm::length(objects.at(obj1).Position-objects.at(obj2).Position) - (EquilibriumDist + (IsExtending(currentTime) ? ExtensionAmount : 0));
+    assert(std::isfinite(diff));
     return 0.5f * SpringConstant * diff * diff;
 }

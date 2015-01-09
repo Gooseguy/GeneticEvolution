@@ -35,10 +35,10 @@ void PhysicsObject::ApplyForce(glm::vec3 force,glm::vec3 nextForce)
 {
     NetForce+=force;
     NextNetForce+=nextForce;
+    assert(std::isfinite(NetForce.x) || std::isfinite(NetForce.y) || std::isfinite(NetForce.z));
 }
 
 float PhysicsObject::GetKineticEnergy()
 {
-    
     return 0.5f * Mass * glm::length2(Velocity);
 }

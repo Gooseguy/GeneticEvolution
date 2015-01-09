@@ -23,9 +23,10 @@ void PhysicsObject::Update(float timeStep)
     //see http://en.wikipedia.org/wiki/Verlet_integration#Velocity_Verlet
     auto currAcceleration = NetForce / Mass;
     auto newPos = Position + Velocity * timeStep + 0.5f * currAcceleration * timeStep * timeStep;
-    auto newAcceleration = NextNetForce * (1.f/Mass);
+    auto newAcceleration = NextNetForce /Mass;
     auto newVelocity = Velocity + 0.5f * timeStep * (currAcceleration + newAcceleration);
     Velocity = newVelocity;
+    assert(std::isfinite(newPos.x) || std::isfinite(newPos.y) || std::isfinite(newPos.z));
     Position = newPos;
     NetForce=glm::vec3();
     NextNetForce=glm::vec3();

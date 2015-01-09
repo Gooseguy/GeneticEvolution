@@ -106,20 +106,20 @@ void SoftBodyAgent::Update(float timeStep, int currentTime)
     {
         spring.ApplyForces(timeStep, currentTime, nodes);
         potentialEnergy+=spring.GetEnergy(nodes,currentTime);
-        assert(!std::isnan(potentialEnergy));
+//        assert(!std::isnan(potentialEnergy));
     }
     float kineticEnergy=0;
     for (auto& node : nodes)
     {
         node.Update(timeStep);
         kineticEnergy+=node.GetKineticEnergy();
-        assert(!std::isnan(kineticEnergy));
+//        assert(!std::isnan(kineticEnergy));
     }
     
-    assert(kineticEnergy+potentialEnergy>0);
+//    assert(kineticEnergy+potentialEnergy>0);
     TotalEnergy+=kineticEnergy;
     TotalEnergy+=potentialEnergy;
-    assert(!std::isnan(TotalEnergy));
+//    assert(!std::isnan(TotalEnergy));
     SoftBodyNode* lowestNode = nullptr;
     glm::vec3 averageDisp=glm::vec3();
 //    float averageHeight = 0;
@@ -165,7 +165,7 @@ void SoftBodyAgent::removeSpring(size_t i)
     {
         for (int j = 0; j< node.GetSpringsUsed();++j)
         {
-            if (node.springs[j]>i)j--;
+            if (node.springs[j]>i) node.springs[j]--;
         }
     }
     springs.erase(springs.begin() + i);
@@ -174,15 +174,17 @@ void SoftBodyAgent::removeSpring(size_t i)
 void SoftBodyAgent::RemoveNode(std::size_t node)
 {
     if (nodes.size() <= 4) return;
-    for (size_t i = 0; i<nodes[node].GetSpringsUsed();++i)
+    const int n =nodes[node].GetSpringsUsed();
+    for (size_t i = 0; i<n;++i)
     {
-        removeSpring(i);
+        removeSpring(nodes[node].springs[i]);
     }
     nodes.erase(nodes.begin()+node);
     for (auto& spring : springs)
     {
         if (spring.obj1>node) spring.obj1--;
         if (spring.obj2>node) spring.obj2--;
+        if (spring.obj1==node || spring.obj2==node) throw std::logic_error("Springs should have already been deleted!");
     }
     initialPositions.erase(initialPositions.begin() + node);
 }
@@ -249,8 +251,9 @@ void SoftBodyAgent::Mutate()
 //        spring.EquilibriumDist+=RandomUtils::Instance.Normal<float>(0, 0.1);
         spring.ExtensionLength+=RandomUtils::Normal<float>(0, ExtensionLengthVariance);
         spring.ExtensionOffset+=RandomUtils::Normal<float>(0, ExtensionOffsetVariance);
-        spring.ExtensionLength%=spring.ExtensionPeriod;
+        
         spring.ExtensionOffset%=spring.ExtensionPeriod;
+        spring.ExtensionLength%=spring.ExtensionPeriod-spring.ExtensionOffset;
         color.x+=RandomUtils::Normal<float>(0.f, 0.05f);
         color.x = std::abs(color.x);
         color.y+=RandomUtils::Normal<float>(0.f, 0.05f);
